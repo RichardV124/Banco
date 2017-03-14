@@ -1,0 +1,71 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/template/index.xhtml">
+	
+	<ui:define name="cuerpo">
+		<h:form preprpenId="false">
+			<h:panelGrid id="paneldatos" columns="2">
+	
+				<h:outputLabel id="lbltipodocumento" value="Tipo de documento" />
+				<h:selectOneMenu id="cbtipo"
+					value="#{customerController.tipodocumento}">
+					<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
+					<f:selectItem itemValue="CEDULA" itemLabel="CEDULA"/>
+					<f:selectItem itemValue="tarjeta de identidad" itemLabel="TARJETA DE IDENTIDAD"/>
+					<f:selectItem itemValue="registro civil" itemLabel="REGISTRO CIVIL"/>
+				</h:selectOneMenu>
+				<h:outputLabel id="lblnumerodocumento"
+					value="Numero de identificacion:" />
+				<h:inputText id="tfnumerodocumento"
+					value="#{customerController.numerodocumento}" />
+				<h:outputLabel id="lblnombre" value="Nombre:" />
+				<h:inputText id="tfnombre" value="#{customerController.nombre}" />
+				<h:outputLabel id="lblapellido" value="Apellido::" />
+				<h:inputText id="tfapellido" value="#{customerController.apellido}" />
+	
+			</h:panelGrid>
+			<h:panelGrid id="panelbtns" columns="2">
+				<h:commandButton id="btncrear" value="Crear"
+					action="#{customerController.crear}" />
+				<h:commandButton id="btnBuscar" value="Buscar"
+					action="#{customerController.buscar}" />
+			</h:panelGrid>
+			
+			<!-- value="customers" la lista con que se va a lleanr tabla y su get -->
+			<h:dataTable id="tablaClientes" value="#{customerController.customers}"
+			var="cus" border="1">
+			<h:column>
+				<f:facet name="header">
+					Tipo
+				</f:facet>
+				<!-- El label es el valor del atributo -->
+				<h:outputLabel value="#{cus.idType}"/>			
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">
+					Identificacion
+				</f:facet>
+				<h:outputLabel value="#{cus.idNum}"/>			
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">
+					Nombre
+				</f:facet>
+				<h:outputLabel value="#{cus.name}"/>			
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">
+					Apellido
+				</f:facet>
+				<h:outputLabel value="#{cus.lastName}"/>			
+			</h:column>
+		</h:dataTable>
+		</h:form>
+	</ui:define>	
+</ui:composition>
