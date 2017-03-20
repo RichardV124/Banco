@@ -125,7 +125,7 @@ public class CreditCardPaymentControllerAjax implements Serializable{
 	}
 	
 	
-	//gg se me borró todo.
+	//gg se me borró todo. didier se la come
 	
 	/**
 	 * Metodo para pagar uan cuota de la tarjeta
