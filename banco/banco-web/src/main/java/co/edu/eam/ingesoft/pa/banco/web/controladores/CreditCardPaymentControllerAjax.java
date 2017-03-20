@@ -124,8 +124,11 @@ public class CreditCardPaymentControllerAjax implements Serializable{
 		}	
 	}
 	
+	
+	//gg se me borró todo.
+	
 	/**
-	 * Metodo para pagar uan cuota de la tarjeta
+	 * Metodo para pagar uan cuota de la tarjeta 
 	 */
 	public void pagarCuota(){
 		System.out.println("asdkasdlkdaslkd" +cuentaSeleccionada);
