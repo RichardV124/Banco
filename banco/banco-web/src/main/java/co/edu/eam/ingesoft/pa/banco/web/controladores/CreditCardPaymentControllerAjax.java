@@ -26,7 +26,7 @@ import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
 @ViewScoped
 public class CreditCardPaymentControllerAjax implements Serializable{
 
-	/**SOPLADLO
+	/**dont mames
 	 * Tipo de documento del customer
 	 */
 	@NotNull(message="Debe seleccionar el tipo de documento")
@@ -128,7 +128,7 @@ public class CreditCardPaymentControllerAjax implements Serializable{
 	//gg se me borró todo.
 	
 	/**
-	 * Metodo para pagar uan cuota de la tarjeta 
+	 * Metodo para pagar uan cuota de la tarjeta
 	 */
 	public void pagarCuota(){
 		System.out.println("asdkasdlkdaslkd" +cuentaSeleccionada);
