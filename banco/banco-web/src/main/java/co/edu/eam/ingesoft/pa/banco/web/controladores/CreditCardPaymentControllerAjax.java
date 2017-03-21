@@ -26,7 +26,7 @@ import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
 @ViewScoped
 public class CreditCardPaymentControllerAjax implements Serializable{
 
-	/**dont mames
+	/**
 	 * Tipo de documento del customer
 	 */
 	@NotNull(message="Debe seleccionar el tipo de documento")
