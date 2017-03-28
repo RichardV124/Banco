@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -36,8 +37,12 @@ public class CuentaAsociada implements Serializable{
 	@ManyToOne(cascade = {})
 	private Bank bank;
 	
-	@JoinColumn(name = "customer")
-	@ManyToOne(cascade = {})
+
+	@ManyToOne
+	@JoinColumns({
+		@JoinColumn(name="idType",referencedColumnName="identification_type"),
+		@JoinColumn(name="idNum",referencedColumnName="identification_number")
+		})
 	private Customer customer;
 	
 	@Column(name="number", nullable=false)
@@ -45,4 +50,6 @@ public class CuentaAsociada implements Serializable{
 	
 	@Column(name="name")
 	private String name;
+	
+	
 }
