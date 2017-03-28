@@ -46,14 +46,18 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 	      </div>
 
 	   	<nav id="main-nav-wrap">
+	   	<h:form>
 				<ul class="main-navigation">
 					<li class="current"><a class="smoothscroll"  href="#intro" title="">Home</a></li>
 					<li><a class="smoothscroll"  href="#process" title="">Process</a></li>
 					<li><a class="smoothscroll"  href="#features" title="">Features</a></li>
 					<li><a class="smoothscroll"  href="#pricing" title="">Pricing</a></li>
 					<li><a class="smoothscroll"  href="#faq" title="">FAQ</a></li>					
-					<li class="highlight with-sep"><a href="#" title="">Sign Up</a></li>					
+					<li><h:commandLink
+									action="#{sessionControl.cerrarSession()}"
+									value="Cerrar Sesion" rendered="#{sessionControl.sesion}" /></li>				
 				</ul>
+				</h:form>
 			</nav>
 
 			<a class="menu-toggle" href="#"><span>Menu</span></a>

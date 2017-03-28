@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/template/index.xhtml">
+
+	<ui:define name="cuerpo">
+
+		<p:messages id="facesMessage" autoUpdate="true" globalOnly="true"
+			closable="true" />
+
+		<h:form prependId="false">
+
+			<p:panel id="paneldatos" header="Avance a cuenta de ahorros">
+
+				<h:panelGrid columns="3">
+
+					<h:outputLabel id="lblnumerotarjeta"
+						value="#{msj['avancecuentaahorros.numerotarjeta']}:" />
+					<h:selectOneMenu id="cbnumerotarjeta"
+						value="#{avanceCuentaAjax.tarjetaSeleccionada}">
+						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
+						<f:selectItems value="#{avanceCuentaAjax.tarjetas}" var="tarjeta"
+							itemValue="#{tarjeta.number}" itemLabel="#{tarjeta.number}" />
+					</h:selectOneMenu>
+					<p:message for="cbnumerotarjeta" />
+
+					<h:outputLabel id="lblmonto"
+						value="#{msj['avancecuentaahorros.monto']}:" />
+					<h:inputText id="tfmonto" value="#{avanceCuentaAjax.monto}" />
+					<p:message for="tfmonto" />
+
+					<h:outputLabel id="lblnumerocuenta"
+						value="#{msj['avancecuentaahorros.numerocuenta']}:" />
+					<h:selectOneMenu id="cbnumerocuenta"
+						value="#{avanceCuentaAjax.cuentaSeleccionada}">
+						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
+						<f:selectItems value="#{avanceCuentaAjax.cuentas}" var="cuenta"
+							itemValue="#{cuenta.number}" itemLabel="#{cuenta.number}" />
+					</h:selectOneMenu>
+					<p:message for="cbnumerocuenta" />
+
+				</h:panelGrid>
+
+			</p:panel>
+
+			<h:panelGrid id="panelbtns" columns="2">
+				<p:commandButton id="btnAceptar"
+					value="#{msj['avancecuentaahorros.aceptar']}"
+					process="@this paneldatos" update="paneldatos"
+					action="#{avanceCuentaAjax.transferir}" />
+
+				<p:commandButton id="btnCancelar"
+					value="#{msj['avancecuentaahorros.cancelar']}" process="@this"
+					update="" action="#{avanceCuentaAjax.cancelar}" />
+			</h:panelGrid>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
