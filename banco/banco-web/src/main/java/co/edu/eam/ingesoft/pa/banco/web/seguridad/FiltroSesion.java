@@ -32,7 +32,7 @@ public class FiltroSesion implements Filter {
 
 	public void doFilter(ServletRequest arg0, ServletResponse arg1, FilterChain chain)
 			throws IOException, ServletException {
-		System.out.println("Filtrsndo peticion!!!!!");
+		System.out.println("Filtrando peticion!!!!!");
 		
 		HttpServletRequest req=(HttpServletRequest) arg0;
 		HttpServletResponse res=(HttpServletResponse) arg1;
