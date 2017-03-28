@@ -14,13 +14,19 @@
 			<p:panel id="paneldatos" header="Datos basicos">
 
 				<h:outputLabel id="lblasociacioncuentas"
-						value="#{msj['creditcardpayment.tipodocumento']}:" />
+						value="#{msj['asociacioncuenta.asociacioncuentas']}:" />
 				
 				<h:panelGrid columns="3">
 
-					<h:outputLabel id="lbltipodocumento"
-						value="#{msj['creditcardpayment.tipodocumento']}:" />
-					<h:selectOneMenu id="cbtipo" value="#{payAjax.tipodocumento}">
+					<h:outputLabel id="lblnombretitular" for="tfnombretitular"
+						value="#{msj['asociacioncuenta.nombretitular']}:" />
+					<h:inputText id="tfnombretitular"
+						value="#{cuentaAsociadaController.nombretitular}" />
+					<p:message for="tfnombretitular" />
+
+					<h:outputLabel id="lbltipodocumento" for="cbtipo"
+						value="#{msj['asociacioncuenta.tipodocumentotitular']}:" />
+					<h:selectOneMenu id="cbtipo" value="#{cuentaAsociadaController.tipodocumento}">
 						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
 						<f:selectItem itemValue="CEDULA" itemLabel="CEDULA" />
 						<f:selectItem itemValue="TARJETA DE IDENTIDAD"
@@ -30,16 +36,24 @@
 					</h:selectOneMenu>
 					<p:message for="cbtipo" />
 
-					<h:outputLabel id="lblnumerodocumento"
-						value="#{msj['creditcardpayment.numerodocumento']}:" />
+					<h:outputLabel id="lblnumerodocumento" for="tfnumerodocumento"
+						value="#{msj['asociacioncuenta.numerodocumentotitular']}:" />
 					<h:inputText id="tfnumerodocumento"
-						value="#{payAjax.numerodocumento}" />
+						value="#{cuentaAsociadaController.numerodocumento}" />
 					<p:message for="tfnumerodocumento" />
 
-					<h:outputLabel id="lblnumerotarjeta"
-						value="#{msj['creditcardpayment.numerotarjeta']}:" />
-					<h:inputText id="tfnumerotarjeta" value="#{payAjax.numerotarjeta}" />
-					<p:message for="tfnumerotarjeta" />
+					<h:outputLabel for="cbbanco" id="lblbanco"
+						value="#{msj['asociacioncuenta.banco']}:" />
+					<h:selectOneMenu id="cbbanco"
+						value="#{cuentaAsociadaController.bancoSeleccionado}">
+						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
+						<f:selectItems value="#{payAjax.cuentas}" var="cuenta"
+							itemValue="#{cuenta.number}" itemLabel="#{cuenta.number}" />
+					</h:selectOneMenu>
+					<h:outputLabel for="cbcuenta" id="lblcuentas"
+						value=" " />
+						
+					
 
 				</h:panelGrid>
 
@@ -61,38 +75,6 @@
 
 			<p:panel header="Listado de consumos" id="paneltabla">
 
-				<p:dataTable id="tablaConsumos" value="#{payAjax.consumos}"
-					var="con" border="1">
-
-					<p:column headerText="Fecha">
-
-						<h:outputLabel value="#{con.dateConsume}" />
-					</p:column>
-
-					<p:column headerText="Valor">
-
-						<h:outputLabel value="#{con.ammount}" />
-					</p:column>
-
-					<p:column headerText="Valor Restante">
-
-						<h:outputLabel value="#{con.remainingAmmount}" />
-					</p:column>
-
-					<p:column headerText="Num. Cuota">
-
-						<h:outputLabel value="#{con.numberShares}" />
-					</p:column>
-
-					<p:column headerText="Pagar">
-						<p:commandButton action="#{payAjax.pagarConsumo(con)}"
-							process="@this" value="#{msj['creditcardpayment.pagarconsumo']}"
-							update="tablaConsumos" />
-					</p:column>
-
-				</p:dataTable>
-
-			</p:panel>
 
 			<p:panel id="paneldatospago" header="Datos basicos">
 

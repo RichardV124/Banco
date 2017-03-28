@@ -37,20 +37,11 @@ public class CuentaAsociada implements Serializable{
 	@ManyToOne(cascade = {})
 	private Bank bank;
 	
-<<<<<<< HEAD
 	@JoinColumns({
 		@JoinColumn(name = "tipo_id_cliente", referencedColumnName = "identification_type"),
 		@JoinColumn(name = "id_cliente", referencedColumnName = "identification_number") 
 		})
 	@ManyToOne(cascade = {})
-=======
-
-	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name="idType",referencedColumnName="identification_type"),
-		@JoinColumn(name="idNum",referencedColumnName="identification_number")
-		})
->>>>>>> refs/remotes/origin/master
 	private Customer customer;
 	
 	@Column(name="number", nullable=false)
@@ -58,6 +49,87 @@ public class CuentaAsociada implements Serializable{
 	
 	@Column(name="name")
 	private String name;
-	
+
+	public CuentaAsociada() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public CuentaAsociada(int id, String ownerName, String ownerTypeId, String ownerNumId, Bank bank, Customer customer,
+			String number, String name) {
+		super();
+		this.id = id;
+		this.ownerName = ownerName;
+		this.ownerTypeId = ownerTypeId;
+		this.ownerNumId = ownerNumId;
+		this.bank = bank;
+		this.customer = customer;
+		this.number = number;
+		this.name = name;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public String getOwnerTypeId() {
+		return ownerTypeId;
+	}
+
+	public void setOwnerTypeId(String ownerTypeId) {
+		this.ownerTypeId = ownerTypeId;
+	}
+
+	public String getOwnerNumId() {
+		return ownerNumId;
+	}
+
+	public void setOwnerNumId(String ownerNumId) {
+		this.ownerNumId = ownerNumId;
+	}
+
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}	
 	
 }
