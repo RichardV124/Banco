@@ -1,0 +1,119 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/template/index.xhtml">
+
+	<ui:define name="cuerpo">
+
+		<p:messages id="facesMessage" autoUpdate="true" globalOnly="true"
+			closable="true" />
+
+		<h:form prependId="false">
+
+			<p:panel id="paneldatos" header="Datos basicos">
+
+				<h:outputLabel id="lblasociacioncuentas"
+						value="#{msj['creditcardpayment.tipodocumento']}:" />
+				
+				<h:panelGrid columns="3">
+
+					<h:outputLabel id="lbltipodocumento"
+						value="#{msj['creditcardpayment.tipodocumento']}:" />
+					<h:selectOneMenu id="cbtipo" value="#{payAjax.tipodocumento}">
+						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
+						<f:selectItem itemValue="CEDULA" itemLabel="CEDULA" />
+						<f:selectItem itemValue="TARJETA DE IDENTIDAD"
+							itemLabel="TARJETA DE IDENTIDAD" />
+						<f:selectItem itemValue="REGISTRO CIVIL"
+							itemLabel="REGISTRO CIVIL" />
+					</h:selectOneMenu>
+					<p:message for="cbtipo" />
+
+					<h:outputLabel id="lblnumerodocumento"
+						value="#{msj['creditcardpayment.numerodocumento']}:" />
+					<h:inputText id="tfnumerodocumento"
+						value="#{payAjax.numerodocumento}" />
+					<p:message for="tfnumerodocumento" />
+
+					<h:outputLabel id="lblnumerotarjeta"
+						value="#{msj['creditcardpayment.numerotarjeta']}:" />
+					<h:inputText id="tfnumerotarjeta" value="#{payAjax.numerotarjeta}" />
+					<p:message for="tfnumerotarjeta" />
+
+				</h:panelGrid>
+
+			</p:panel>
+
+			<h:panelGrid id="panelbtns" columns="1">
+				<p:commandButton id="btnBuscar"
+					value="#{msj['creditcardpayment.buscar']}"
+					process="@this tfnumerodocumento tfnumerotarjeta cbtipo"
+					update="paneltabla cbcuenta" action="#{payAjax.buscar}" />
+			</h:panelGrid>
+
+			<h:panelGrid id="panelbtnspago" columns="1">
+				<p:commandButton id="btnPago"
+					value="#{msj['creditcardpayment.pagar']}"
+					process="@this paneldatos paneldatospago" update="tablaConsumos"
+					action="#{payAjax.pagarCuota}" />
+			</h:panelGrid>
+
+			<p:panel header="Listado de consumos" id="paneltabla">
+
+				<p:dataTable id="tablaConsumos" value="#{payAjax.consumos}"
+					var="con" border="1">
+
+					<p:column headerText="Fecha">
+
+						<h:outputLabel value="#{con.dateConsume}" />
+					</p:column>
+
+					<p:column headerText="Valor">
+
+						<h:outputLabel value="#{con.ammount}" />
+					</p:column>
+
+					<p:column headerText="Valor Restante">
+
+						<h:outputLabel value="#{con.remainingAmmount}" />
+					</p:column>
+
+					<p:column headerText="Num. Cuota">
+
+						<h:outputLabel value="#{con.numberShares}" />
+					</p:column>
+
+					<p:column headerText="Pagar">
+						<p:commandButton action="#{payAjax.pagarConsumo(con)}"
+							process="@this" value="#{msj['creditcardpayment.pagarconsumo']}"
+							update="tablaConsumos" />
+					</p:column>
+
+				</p:dataTable>
+
+			</p:panel>
+
+			<p:panel id="paneldatospago" header="Datos basicos">
+
+				<h:panelGrid columns="2">
+					<h:outputLabel for="cbcuenta" id="lblcuentas"
+						value="#{msj['creditcardpayment.seleccionecuenta']}:" />
+					<h:selectOneMenu id="cbcuenta"
+						value="#{payAjax.cuentaSeleccionada}">
+						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
+						<f:selectItems value="#{payAjax.cuentas}" var="cuenta"
+							itemValue="#{cuenta.number}" itemLabel="#{cuenta.number}" />
+					</h:selectOneMenu>
+
+					<h:outputLabel id="lblexcedente" value="#{msj['creditcardpayment.excedente']}:" />
+					<h:inputText id="tfexcedente" value="#{payAjax.excedente}" />
+
+				</h:panelGrid>
+
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
