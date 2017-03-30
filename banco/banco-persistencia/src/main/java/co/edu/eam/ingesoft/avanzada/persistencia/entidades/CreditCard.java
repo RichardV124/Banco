@@ -96,5 +96,9 @@ public class CreditCard extends Product implements Serializable {
 	public void setAmmountConsumed(double ammountConsumed) {
 		this.ammountConsumed = ammountConsumed;
 	}
+	
+	public double getDisponible(){
+		return ammount-ammountConsumed;
+	}
 
 }

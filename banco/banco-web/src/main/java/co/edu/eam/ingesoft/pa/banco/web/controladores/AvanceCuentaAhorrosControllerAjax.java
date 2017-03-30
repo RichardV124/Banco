@@ -65,8 +65,6 @@ public class AvanceCuentaAhorrosControllerAjax implements Serializable {
 			Usuario usuario = Faces.getSessionAttribute("user");
 			cuentas = savingAccountEJB.listarCuentasCliente(usuario.getCustomer());
 			tarjetas = creditCardEJB.listarTarjetasCliente(usuario.getCustomer());
-			Messages.addFlashGlobalInfo(usuario.getUser());
-			
 		} catch (ExcepcionNegocio e1) {
 			Messages.addFlashGlobalError(e1.getMessage());
 			e1.printStackTrace();
@@ -78,11 +76,21 @@ public class AvanceCuentaAhorrosControllerAjax implements Serializable {
 	}
 
 	public void transferir() {
-
+		try {
+			savingAccountEJB.avanceConTarjeta(tarjetaSeleccionada, cuentaSeleccionada, monto);
+			Messages.addFlashGlobalInfo("Se hizo el avance correctamente");
+		} catch (ExcepcionNegocio e1) {
+			Messages.addFlashGlobalError(e1.getMessage());
+			e1.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Messages.addFlashGlobalInfo(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
-	public void cancelar() {
-
+	public String cancelar() {
+		return "/paginas/seguro/inicio.xhtml?faces-redirect=true";
 	}
 
 	public String getTarjetaSeleccionada() {

@@ -52,7 +52,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 					<li><a class="smoothscroll"  href="#process" title="">Process</a></li>
 					<li><a class="smoothscroll"  href="#features" title="">Features</a></li>
 					<li><a class="smoothscroll"  href="#pricing" title="">Pricing</a></li>
-					<li><a class="smoothscroll"  href="#faq" title="">FAQ</a></li>					
+					<li><h:commandLink
+									action="#{inicioAjax.redirigir()}"
+									value="Pago tarjeta cuenta avance" rendered="#{sessionControl.sesion}" /></li>				
 					<li><h:commandLink
 									action="#{sessionControl.cerrarSession()}"
 									value="Cerrar Sesion" rendered="#{sessionControl.sesion}" /></li>				
@@ -112,14 +114,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
    ================================================== -->
    <section id="process">  
    	<div class="row section-intro">
-   		<div class="col-twelve with-bottom-line">
-			
-			
+   		<div class="col-twelve with-bottom-line">	
+   		
 						<ui:insert name="cuerpo" />
-						
-			
-				
-			<!-- holis -->
 
    		</div>   		
    	</div>
@@ -130,243 +127,10 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 
    </section> <!-- /process-->    
 
-
-   <!-- features Section
-   ================================================== -->
-	<section id="features">
-
-		<div class="row section-intro">
-   		<div class="col-twelve with-bottom-line">
-
-   			<h5>Features</h5>
-   			<h1>Great features you'll love.</h1>
-
-   			<p class="lead">Lorem ipsum Do commodo in proident enim in dolor cupidatat adipisicing dolore officia nisi aliqua incididunt Ut veniam lorem ipsum Consectetur ut in in eu do.</p>
-
-   		</div>   		
-   	</div>
-
-   	<div class="row features-content">
-
-   		<div class="features-list block-1-3 block-s-1-2 block-tab-full group">
-          
-
-			   </div> <!-- /bgrid -->
-
-	      </div> <!-- features-list -->
-		
-	</section> <!-- /features -->
-	
-
-	<!-- pricing
-   ================================================== -->
-
-   <section id="pricing">
-
-   	<div class="row section-intro">
-   		<div class="col-twelve with-bottom-line">
-
-   			<h5>Our Pricing</h5>
-   			<h1>Pick the best plan for you.</h1>
-
-   			<p class="lead">Lorem ipsum Do commodo in proident enim in dolor cupidatat adipisicing dolore officia nisi aliqua incididunt Ut veniam lorem ipsum Consectetur ut in in eu do.</p>
-
-   		</div>   		
-   	</div>
-
-   	<div class="row pricing-content">
-
-
-      </div> <!-- /pricing-content --> 
-
-   </section> <!-- /pricing --> 
-
-
-   <!-- Testimonials Section
-   ================================================== -->
-   <section id="testimonials">
-
-   	<div class="row">
-   		<div class="col-twelve">
-   			<h2 class="h01">Hear What Are Clients Say.</h2>
-   		</div>   		
-   	</div>   	
-
-      <div class="row flex-container">
-    
-         <div id="testimonial-slider" class="flexslider">
-
-            <ul class="slides">
-
-               <li>
-               	<div class="testimonial-author">
-                    	<img src="images/avatars/avatar-1.jpg" alt="Author image"/>
-                    	<div class="author-info">
-                    		Steve Jobs
-                    		<span class="position">CEO, Apple.</span>
-                    	</div>
-                  </div>
-
-                  <p>
-                  Your work is going to fill a large part of your life, and the only way to be truly satisfied is
-                  to do what you believe is great work. And the only way to do great work is to love what you do.
-                  If you haven't found it yet, keep looking. Don't settle. As with all matters of the heart, you'll know when you find it.  						
-                  </p>                  
-             	</li> <!-- /slide -->
-
-               <li> 
-
-               	<div class="testimonial-author">
-                    	<img src="images/avatars/avatar-2.jpg" alt="Author image"/>
-                    	<div class="author-info">
-                    		John Doe
-                    		<span>CEO, ABC Corp.</span>
-                    	</div>
-                  </div> 
-
-                  <p>
-                  This is Photoshop's version  of Lorem Ipsum. Proin gravida nibh vel velit auctor aliquet.
-                  Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem
-                  nibh id elit. Duis sed odio sit amet nibh vulputate cursus a sit amet mauris.    
-                  </p>
-                                         
-               </li> <!-- /slide -->
-
-            </ul> <!-- /slides -->
-
-         </div> <!-- /testimonial-slider -->         
-        
-      </div> <!-- /flex-container -->
-
-   </section> <!-- /testimonials -->
-
-
-   <!-- faq
-   ================================================== -->
-   <section id="faq">
-
-
-   	<div class="row section-ads">
-
-		   <div class="col-twelve">	
-
-		     	<div class="ad-content">
-
-		     		<h2 class="h01"><a href="http://www.dreamhost.com/r.cgi?287326|STYLESHOUT">Styleshout Recommends Dreamhost.</a></h2>
-
-			      <p class="lead">
-			      Looking for an awesome and reliable webhosting? Try <a href="http://www.dreamhost.com/r.cgi?287326|STYLESHOUT"><span>DreamHost</span></a>.
-					Get <span>$50 off</span> when you sign up with the promocode <span>styleshout</span>. 
-					<!-- Simply type	the promocode in the box labeled “Promo Code” when placing your order. -->					
-					</p>
-
-					<div class="action">
-			         <a class="button large round" href="http://www.dreamhost.com/r.cgi?287326|STYLESHOUT">Sign Up Now</a>
-		        	</div>
-
-		     	</div>			      
-
-			</div>
-
-		</div> <!-- /section-ads --> 
-
-
-   </section> <!-- /faq --> 
-
    <!-- footer
    ================================================== -->
    <footer>
-
-   	<div class="footer-main">
-
-   		<div class="row">  
-
-	      	<div class="col-four tab-full mob-full footer-info">            
-
-	            <div class="footer-logo"></div>
-
-	            <p>
-		        	1600 Amphitheatre Parkway<br/>
-            	Mountain View, CA 94043 US<br/>
-		        	info@lhander.com ; +123-456-789
-		        	</p>
-
-		      </div> <!-- /footer-info -->
-
-	      	<div class="col-two tab-1-3 mob-1-2 site-links">
-
-	      		<h4>Site Links</h4>
-
-	      		<ul>
-	      			<li><a href="#">About Us</a></li>
-						<li><a href="#">Blog</a></li>
-						<li><a href="#">FAQ</a></li>
-						<li><a href="#">Terms</a></li>
-						<li><a href="#">Privacy Policy</a></li>
-					</ul>
-
-	      	</div> <!-- /site-links -->  
-
-	      	<div class="col-two tab-1-3 mob-1-2 social-links">
-
-	      		<h4>Social</h4>
-
-	      		<ul>
-	      			<li><a href="#">Twitter</a></li>
-						<li><a href="#">Facebook</a></li>
-						<li><a href="#">Dribbble</a></li>
-						<li><a href="#">Google+</a></li>
-						<li><a href="#">Skype</a></li>
-					</ul>
-	      	           	
-	      	</div> <!-- /social --> 
-
-	      	<div class="col-four tab-1-3 mob-full footer-subscribe">
-
-	      		<h4>Subscribe</h4>
-
-	      		<p>Keep yourself updated. Subscribe to our newsletter.</p>
-
-	      		<div class="subscribe-form">
-	      	
-	      			<form id="mc-form" class="group" novalidate="true">
-
-							<input type="email" value="" name="dEmail" class="email" id="mc-email" placeholder="type email &amp; hit enter" required=""/> 
-	   		
-			   			<input type="submit" name="subscribe" />
-		   	
-		   				<label for="mc-email" class="subscribe-message"></label>
-			
-						</form>
-
-	      		</div>	      		
-	      	           	
-	      	</div> <!-- /subscribe -->         
-
-	      </div> <!-- /row -->
-
-   	</div> <!-- /footer-main -->
-
-
-      <div class="footer-bottom">
-
-      	<div class="row">
-
-      		<div class="col-twelve">
-	      		<div class="copyright">
-		         	<span>© Copyright Lhander 2016.</span> 
-		         	<span>Design by <a href="http://www.styleshout.com/">styleshout</a></span>		         	
-		         </div>
-
-		         <div id="go-top" style="display: block;">
-		            <a class="smoothscroll" title="Back to Top" href="#top"><i class="icon ion-android-arrow-up"></i></a>
-		         </div>         
-	      	</div>
-
-      	</div> <!-- /footer-bottom -->     	
-
-      </div>
-
+   
    </footer>  
 
    <div id="preloader"> 

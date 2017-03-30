@@ -2,15 +2,60 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	template="/template/index.xhtml">
-	
+	xmlns:p="http://primefaces.org/ui" template="/template/index.xhtml">
+
 	<ui:define name="cuerpo">
-			<h:form prependId="false">
-			
-			<h1>Bienvenido!!!! #{sessionControl.usuario.user}</h1>
+		<h:form prependId="false">
+
+			<p:panel header="Listado de cuentas del cliente"
+				id="paneltablacuentas">
+
+				<p:dataTable id="tablaCuentas" value="#{inicioAjax.cuentas}" var="cue"
+					border="1">
+
+					<p:column headerText="Numero">
+
+						<h:outputLabel value="#{cue.number}" />
+					</p:column>
+
+					<p:column headerText="Saldo">
+
+						<h:outputLabel value="#{cue.ammount}" />
+					</p:column>
+
+				</p:dataTable>
+
+			</p:panel>
+
+			<p:panel header="Listado de tarjetas de credito" id="paneltabla">
+
+				<p:dataTable id="tablaTarjetas" value="#{inicioAjax.tarjetas}"
+					var="tar" border="1">
+
+					<p:column headerText="Numero">
+
+						<h:outputLabel value="#{tar.number}" />
+					</p:column>
+
+					<p:column headerText="Franquisia">
+
+						<h:outputLabel value="#{tar.franchise.name}" />
+					</p:column>
+
+					<p:column headerText="Deuda a la fecha">
+
+						<h:outputLabel value="#{tar.ammountConsumed}" />
+					</p:column>
+
+					<p:column headerText="Disponible">
+
+						<h:outputLabel value="#{tar.disponible}" />
+					</p:column>
 
 
+				</p:dataTable>
+
+			</p:panel>
 		</h:form>
-	</ui:define>	
+	</ui:define>
 </ui:composition>

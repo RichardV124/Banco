@@ -21,5 +21,7 @@ public interface ISavingAccountRemote {
 	public void retirarMontoCuenta(SavingAccount sav,double monto);
 	public void transladarMontoCuenta(SavingAccount savSalida,SavingAccount savEntrada,double monto);
 	public void crearTransaccion(Transaction t);
+	public void avanceConTarjeta(String numeroTarjeta, String numeroCuenta, double monto);
+	public void crearTransactionWeb(Transaction t);
 	
 }

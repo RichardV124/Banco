@@ -37,20 +37,11 @@ public class CuentaAsociada implements Serializable{
 	@ManyToOne(cascade = {})
 	private Bank bank;
 	
-<<<<<<< HEAD
 	@JoinColumns({
 		@JoinColumn(name = "tipo_id_cliente", referencedColumnName = "identification_type"),
 		@JoinColumn(name = "id_cliente", referencedColumnName = "identification_number") 
 		})
 	@ManyToOne(cascade = {})
-=======
-
-	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name="idType",referencedColumnName="identification_type"),
-		@JoinColumn(name="idNum",referencedColumnName="identification_number")
-		})
->>>>>>> refs/remotes/origin/master
 	private Customer customer;
 	
 	@Column(name="number", nullable=false)

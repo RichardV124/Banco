@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -14,6 +15,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CreditCard;
+import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CreditCardConsume;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Customer;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Franchise;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SavingAccount;
@@ -28,6 +31,15 @@ public class SavingAccountEJB {
 
 	@PersistenceContext
 	private EntityManager em;
+
+	@EJB
+	private CreditCardEJB creditCardEJB;
+
+	@EJB
+	private SavingAccountEJB savingAccountEJB;
+
+	@EJB
+	private CreditCardConsumeEJB creditConsumeEJB;
 
 	/**
 	 * MEtodo para crear una cuenta de ahorros...
@@ -174,10 +186,72 @@ public class SavingAccountEJB {
 		return cadena;
 	}
 
+	/**
+	 * Metodo que registra el monto, tipo y la fecha de la transaccion
+	 * 
+	 * @param sav
+	 * @param monto
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void crearTransaction(SavingAccount sav, double monto) {
 		Transaction t = new Transaction();
 		t.setSavingAccNumber(sav);
 		t.setSourceTransact("Caja");
+		t.setAmmount(monto);
+		t.setTransactionDate(new Date());
+		em.persist(t);
+	}
+
+	/**
+	 * Registra el avance de una tarjeta credito a una cuenta de ahorros
+	 * 
+	 * @param numeroTarjeta
+	 *            Número de la tarjeta de credito
+	 * @param numeroCuenta
+	 *            Número de la cuenta de ahorros
+	 * @throws Exception
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void avanceConTarjeta(String numeroTarjeta, String numeroCuenta, double monto) throws Exception {
+
+		CreditCard tarjeta = creditCardEJB.buscarCreditCard(numeroTarjeta);
+		SavingAccount cuenta = savingAccountEJB.buscarSavingAccount(numeroCuenta);
+		double montoDisponible = tarjeta.getDisponible();
+		double cupo = tarjeta.getDisponible();
+		if ((cupo * 0.30) >= monto) {
+			CreditCardConsume creditConsume = new CreditCardConsume();
+			creditConsume.setPayed(false);
+			creditConsume.setCreditCard(tarjeta);
+			creditConsume.setInterest(0.036);
+			creditConsume.setRemainingAmmount(monto);
+			creditConsume.setAmmount(monto);
+			creditConsume.setNumberShares(24);
+			//Persistir consumo
+			tarjeta.setAmmountConsumed(tarjeta.getAmmountConsumed() + monto);
+			//Persistir tarjeta
+			cuenta.setAmmount(cuenta.getAmmount() + monto);
+			//Persistir cuenta
+			crearTransaction(cuenta, monto);
+			creditConsumeEJB.crearCreditCardConsume(creditConsume);
+			em.merge(tarjeta);
+			em.merge(cuenta);
+
+		}else{
+			throw new ExcepcionNegocio("La tarjeta no cuenta con suficiente saldo para cubrir el avance");
+		}
+	}
+	
+	/**
+	 * Metodo que registra el monto, tipo y la fecha de la transaccion
+	 * 
+	 * @param sav
+	 * @param monto
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void crearTransactionWeb(SavingAccount sav, double monto) {
+		Transaction t = new Transaction();
+		t.setSavingAccNumber(sav);
+		t.setSourceTransact("WEB");
 		t.setAmmount(monto);
 		t.setTransactionDate(new Date());
 		em.persist(t);

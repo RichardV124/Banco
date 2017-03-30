@@ -51,8 +51,8 @@
 					action="#{avanceCuentaAjax.transferir}" />
 
 				<p:commandButton id="btnCancelar"
-					value="#{msj['avancecuentaahorros.cancelar']}" process="@this"
-					update="" action="#{avanceCuentaAjax.cancelar}" />
+					value="#{msj['avancecuentaahorros.cancelar']}" ajax="false"
+					action="#{avanceCuentaAjax.cancelar()}" />
 			</h:panelGrid>
 
 		</h:form>
