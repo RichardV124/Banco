@@ -10,11 +10,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="T_CUENTA_ASOCIADA")
+@NamedQueries({ 
+	@NamedQuery(name = CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS, query = "SELECT ca FROM CuentaAsociada ca WHERE ca.customer=?1") 
+	})
 public class CuentaAsociada implements Serializable{
+	
+	public static final String CONSULTA_LISTAR_CUENTAS_ASOCIADAS = "CuentaAsociada.ListarCuentas";
 	
 	/**
 	 * id autoincrementable de la cuenta asociada
@@ -49,6 +56,87 @@ public class CuentaAsociada implements Serializable{
 	
 	@Column(name="name")
 	private String name;
-	
+
+	public CuentaAsociada() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public CuentaAsociada(int id, String ownerName, String ownerTypeId, String ownerNumId, Bank bank, Customer customer,
+			String number, String name) {
+		super();
+		this.id = id;
+		this.ownerName = ownerName;
+		this.ownerTypeId = ownerTypeId;
+		this.ownerNumId = ownerNumId;
+		this.bank = bank;
+		this.customer = customer;
+		this.number = number;
+		this.name = name;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public String getOwnerTypeId() {
+		return ownerTypeId;
+	}
+
+	public void setOwnerTypeId(String ownerTypeId) {
+		this.ownerTypeId = ownerTypeId;
+	}
+
+	public String getOwnerNumId() {
+		return ownerNumId;
+	}
+
+	public void setOwnerNumId(String ownerNumId) {
+		this.ownerNumId = ownerNumId;
+	}
+
+	public Bank getBank() {
+		return bank;
+	}
+
+	public void setBank(Bank bank) {
+		this.bank = bank;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}	
 	
 }

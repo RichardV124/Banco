@@ -5,11 +5,18 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="T_BANK")
+@NamedQueries({ 
+	@NamedQuery(name = Bank.CONSULTA_LISTAR_BANCOS, query = "SELECT b FROM Bank b") 
+	})
 public class Bank implements Serializable{
+	
+	public static final String CONSULTA_LISTAR_BANCOS = "Bank.ListarBancos";
 	
 	/**
 	 * Id del banco
@@ -31,31 +38,31 @@ public class Bank implements Serializable{
 		super();
 	}
 
-	/**
-	 * Constructor con los atributos
-	 * @param id
-	 * @param nombre
-	 */
-	public Bank(String id, String nombre) {
+	
+	public Bank(String id, String name) {
 		super();
 		this.id = id;
-		this.name = nombre;
+		this.name = name;
 	}
+
 
 	public String getId() {
 		return id;
 	}
 
+
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	public String getNombre() {
+
+	public String getName() {
 		return name;
 	}
 
-	public void setNombre(String nombre) {
-		this.name = nombre;
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	
