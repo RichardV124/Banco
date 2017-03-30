@@ -29,11 +29,14 @@
 						value="#{msj['asociacioncuenta.tipodocumentotitular']}:" />
 					<h:selectOneMenu id="cbtipo" value="#{cuentaAsociadaController.tipodocumento}">
 						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
-						<f:selectItem itemValue="CEDULA" itemLabel="CEDULA" />
-						<f:selectItem itemValue="TARJETA DE IDENTIDAD"
+						<f:selectItem itemValue="CC" 
+							itemLabel="CEDULA" />
+						<f:selectItem itemValue="TI"
 							itemLabel="TARJETA DE IDENTIDAD" />
-						<f:selectItem itemValue="REGISTRO CIVIL"
-							itemLabel="REGISTRO CIVIL" />
+						<f:selectItem itemValue="PAS"
+							itemLabel="PASAPORTE" />
+						<f:selectItem itemValue="CE"
+							itemLabel="CEDULA DE EXTRANJERIA" />
 					</h:selectOneMenu>
 					<p:message for="cbtipo" />
 

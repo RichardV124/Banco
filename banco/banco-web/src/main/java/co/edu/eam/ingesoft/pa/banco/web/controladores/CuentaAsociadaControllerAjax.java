@@ -10,10 +10,13 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
 import org.omnifaces.cdi.ViewScoped;
+import org.omnifaces.util.Faces;
 
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Bank;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CuentaAsociada;
+import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Usuario;
 import co.edu.eam.ingesoft.pa.negocio.beans.BankEJB;
+import co.edu.eam.ingesoft.pa.negocio.beans.CuentaAsociadaEJB;
 
 @Named("cuentaAsociadaController")
 @ViewScoped
@@ -64,19 +67,41 @@ public class CuentaAsociadaControllerAjax implements Serializable{
 	 */
 	@EJB
 	private BankEJB bankEJB;
+	
+	/**
+	 * EJB de la cuenta asociada
+	 */
+	@EJB
+	private CuentaAsociadaEJB cuentaAsociadaEJB;
 
 	
 	@PostConstruct
 	public void inicializar(){
+		
 		bancos = bankEJB.listarBancos();
 	}
 	
 	public void asociar(){
+		
 		CuentaAsociada ca = new CuentaAsociada();
 		ca.setOwnerName(nombretitular);
 		ca.setOwnerTypeId(tipodocumento);
 		ca.setOwnerNumId(numerodocumento);
 		Bank b = bankEJB.buscar(bancoSeleccionado);
+		ca.setBank(b);
+		ca.setNumber(numerocuenta);
+		ca.setName(nombrecuenta);
+		Usuario usuario = Faces.getSessionAttribute("user");
+		ca.setCustomer(usuario.getCustomer());
+		cuentaAsociadaEJB.crear(ca);
+		
+		//limpiar campos del formulario
+		nombretitular="";
+		tipodocumento=null;
+		numerodocumento="";
+		bancoSeleccionado=null;
+		numerocuenta="";
+		nombrecuenta="";
 	}
 	
 	public void cancelar(){

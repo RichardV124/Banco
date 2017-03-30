@@ -56,9 +56,12 @@ public class CuentaAsociada implements Serializable{
 	
 	@Column(name="name")
 	private String name;
+	
+	@Column(name="estado")
+	private String estado;
 
 	public CuentaAsociada() {
-		super();
+		this.estado = "no verificada";
 		// TODO Auto-generated constructor stub
 	}
 
@@ -73,6 +76,7 @@ public class CuentaAsociada implements Serializable{
 		this.customer = customer;
 		this.number = number;
 		this.name = name;
+		this.estado = "no verificada";
 	}
 
 	public int getId() {
@@ -137,6 +141,14 @@ public class CuentaAsociada implements Serializable{
 
 	public void setName(String name) {
 		this.name = name;
-	}	
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
 	
 }
