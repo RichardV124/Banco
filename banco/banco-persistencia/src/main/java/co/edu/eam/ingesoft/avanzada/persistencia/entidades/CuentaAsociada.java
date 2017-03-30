@@ -10,11 +10,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="T_CUENTA_ASOCIADA")
+@NamedQueries({ 
+	@NamedQuery(name = CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS, query = "SELECT ca FROM CuentaAsociada ca WHERE ca.customer=?1") 
+	})
 public class CuentaAsociada implements Serializable{
+	
+	public static final String CONSULTA_LISTAR_CUENTAS_ASOCIADAS = "CuentaAsociada.ListarCuentas";
 	
 	/**
 	 * id autoincrementable de la cuenta asociada

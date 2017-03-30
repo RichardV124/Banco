@@ -14,7 +14,8 @@
 			<p:panel id="paneldatos" header="Datos basicos">
 
 				<h:outputLabel id="lblasociacioncuentas"
-						value="#{msj['asociacioncuenta.asociacioncuentas']}:" />
+						value="#{msj['asociacioncuenta.asociacioncuentas']}" />
+				
 				
 				<h:panelGrid columns="3">
 
@@ -47,53 +48,39 @@
 					<h:selectOneMenu id="cbbanco"
 						value="#{cuentaAsociadaController.bancoSeleccionado}">
 						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
-						<f:selectItems value="#{payAjax.cuentas}" var="cuenta"
-							itemValue="#{cuenta.number}" itemLabel="#{cuenta.number}" />
+						<f:selectItems value="#{cuentaAsociadaController.bancos}" var="banco"
+							itemValue="#{banco.id}" itemLabel="#{banco.name}" />
 					</h:selectOneMenu>
-					<h:outputLabel for="cbcuenta" id="lblcuentas"
+					<h:outputLabel for="cbbanco" id="lblblanco"
 						value=" " />
 						
+					<h:outputLabel id="lblnumerocuenta" for="tfnumerocuenta"
+						value="#{msj['asociacioncuenta.numerocuenta']}:" />
+					<h:inputText id="tfnumerocuenta"
+						value="#{cuentaAsociadaController.numerocuenta}" />
+					<p:message for="tfnumerocuenta" />
 					
-
+					<h:outputLabel id="lblnombrecuenta" for="tfnombrecuenta"
+						value="#{msj['asociacioncuenta.nombrecuenta']}:" />
+					<h:inputText id="tfnombrecuenta"
+						value="#{cuentaAsociadaController.nombrecuenta}" />
+					<p:message for="tfnombrecuenta" />			
+					
 				</h:panelGrid>
 
 			</p:panel>
 
-			<h:panelGrid id="panelbtns" columns="1">
-				<p:commandButton id="btnBuscar"
-					value="#{msj['creditcardpayment.buscar']}"
-					process="@this tfnumerodocumento tfnumerotarjeta cbtipo"
-					update="paneltabla cbcuenta" action="#{payAjax.buscar}" />
+			<h:panelGrid id="panelbtns" columns="2">
+				<p:commandButton id="btnregistrar"
+					value="#{msj['asociacioncuenta.asociar']}"
+					process="@this paneldatos" update="paneldatos" 
+					action="#{cuentaAsociadaController.asociar}" />
+
+				<p:commandButton id="btncancelar"
+					value="#{msj['asociacioncuenta.cancelar']}"
+					process="@this paneldatos" update="paneldatos"
+					action="#{cuentaAsociadaController.cancelar}" />
 			</h:panelGrid>
-
-			<h:panelGrid id="panelbtnspago" columns="1">
-				<p:commandButton id="btnPago"
-					value="#{msj['creditcardpayment.pagar']}"
-					process="@this paneldatos paneldatospago" update="tablaConsumos"
-					action="#{payAjax.pagarCuota}" />
-			</h:panelGrid>
-
-			<p:panel header="Listado de consumos" id="paneltabla">
-
-
-			<p:panel id="paneldatospago" header="Datos basicos">
-
-				<h:panelGrid columns="2">
-					<h:outputLabel for="cbcuenta" id="lblcuentas"
-						value="#{msj['creditcardpayment.seleccionecuenta']}:" />
-					<h:selectOneMenu id="cbcuenta"
-						value="#{payAjax.cuentaSeleccionada}">
-						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
-						<f:selectItems value="#{payAjax.cuentas}" var="cuenta"
-							itemValue="#{cuenta.number}" itemLabel="#{cuenta.number}" />
-					</h:selectOneMenu>
-
-					<h:outputLabel id="lblexcedente" value="#{msj['creditcardpayment.excedente']}:" />
-					<h:inputText id="tfexcedente" value="#{payAjax.excedente}" />
-
-				</h:panelGrid>
-
-			</p:panel>
 
 		</h:form>
 
