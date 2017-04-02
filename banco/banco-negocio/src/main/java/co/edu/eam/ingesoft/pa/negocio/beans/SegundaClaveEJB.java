@@ -31,8 +31,8 @@ public class SegundaClaveEJB {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void crear(SegundaClave sc){
-		String clave = generarClave();
-		sc.setClave(clave);
+		//String clave = generarClave();
+		sc.setClave(sc.getClave());
 		Date fechaGeneracion = fechaGeneracion();
 		sc.setFechaGeneracion(fechaGeneracion);
 		Date fechaVencimiento = fechaVencimiento();
@@ -87,7 +87,7 @@ public class SegundaClaveEJB {
 	private Date fechaVencimiento(){
 		Calendar calendar = Calendar.getInstance();
 		Date fechaVencimiento = calendar.getTime();
-		fechaVencimiento.setMinutes(fechaVencimiento.getMinutes() + 90);
+		fechaVencimiento.setMinutes(fechaVencimiento.getMinutes() + 2);
 		return fechaVencimiento;
 	}
 }

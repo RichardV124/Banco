@@ -14,14 +14,15 @@
 			<p:panel id="paneldatos" header="Avance a cuenta de ahorros">
 
 				<h:panelGrid columns="4">
-				
+
 					<h:outputLabel id="lblnumerocuenta"
 						value="#{msj['transferircuentaasociada.numerocuenta']}:" />
 					<h:selectOneMenu id="cbnumerocuenta"
 						value="#{controladorTransferirAjax.cuentaSeleccionada}">
 						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
-						<f:selectItems value="#{controladorTransferirAjax.cuentas}" var="cuenta"
-							itemValue="#{cuenta.number}" itemLabel="#{cuenta.number}" />
+						<f:selectItems value="#{controladorTransferirAjax.cuentas}"
+							var="cuenta" itemValue="#{cuenta.number}"
+							itemLabel="#{cuenta.number}" />
 					</h:selectOneMenu>
 					<p:message for="cbnumerocuenta" />
 					<h:outputLabel id="lblcuentavacia" value="" />
@@ -47,28 +48,32 @@
 
 
 					<h:outputLabel id="lblcodigoverif"
-						value="#{msj['avancecuentaahorros.monto']}:" />
+						value="#{msj['transferircuentaasociada.codigoverificacion']}:" />
 					<h:inputText id="tfcodverficacion"
 						value="#{controladorTransferirAjax.codigoverificacion}" />
-					<p:message for="tfcodverficacion" />
 					<p:commandButton id="btnVerificar"
 						value="#{msj['transferircuentaasociada.verificar']}"
 						process="@this paneldatos" update="paneldatos"
 						action="#{controladorTransferirAjax.verificar}" />
+						<p:message for="tfcodverficacion" />
 
 				</h:panelGrid>
 
 			</p:panel>
 
-			<h:panelGrid id="panelbtns" columns="2">
+			<h:panelGrid id="panelbtns" columns="3">
 				<p:commandButton id="btnAceptar"
-					value="#{msj['avancecuentaahorros.aceptar']}"
+					value="#{msj['transferircuentaasociada.transferir']}"
 					process="@this paneldatos" update="paneldatos"
 					action="#{controladorTransferirAjax.transferir}" />
 
 				<p:commandButton id="btnCancelar"
 					value="#{msj['avancecuentaahorros.cancelar']}" ajax="false"
 					action="#{controladorTransferirAjax.cancelar()}" />
+
+				<p:commandButton id="btnGenerarClave"
+					value="#{msj['transferircuentaasociada.generar']}" ajax="false"
+					action="#{controladorTransferirAjax.generarClave}" />
 			</h:panelGrid>
 
 		</h:form>

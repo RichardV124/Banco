@@ -23,5 +23,6 @@ public interface ISavingAccountRemote {
 	public void crearTransaccion(Transaction t);
 	public void avanceConTarjeta(String numeroTarjeta, String numeroCuenta, double monto);
 	public void crearTransactionWeb(Transaction t);
+	public void tranferenciaInterbancaria(String numeroAsociada, String numeroCuenta, double monto);
 	
 }

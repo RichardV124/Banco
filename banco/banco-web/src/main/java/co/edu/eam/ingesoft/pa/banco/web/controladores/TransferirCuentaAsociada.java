@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
+import javax.xml.ws.BindingProvider;
 
 import org.omnifaces.cdi.ViewScoped;
 import org.omnifaces.util.Faces;
@@ -13,63 +14,142 @@ import org.omnifaces.util.Messages;
 
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CuentaAsociada;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SavingAccount;
+import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SegundaClave;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Usuario;
 import co.edu.eam.ingesoft.pa.negocio.beans.CuentaAsociadaEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.SavingAccountEJB;
+import co.edu.eam.ingesoft.pa.negocio.beans.SegundaClaveEJB;
 import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
+import co.edu.eam.pa.clientews.Mail;
+import co.edu.eam.pa.clientews.Notificaciones;
+import co.edu.eam.pa.clientews.NotificacionesService;
+import co.edu.eam.pa.clientews.RespuestaNotificacion;
 
 @Named("controladorTransferirAjax")
 @ViewScoped
-public class TransferirCuentaAsociada implements Serializable{
+public class TransferirCuentaAsociada implements Serializable {
 
 	/**
 	 * cuenta de ahorros seleccionada
 	 */
 	private String asociadaSeleccionada;
-	
+
 	/**
 	 * cuenta de ahorros seleccionada
 	 */
 	private String cuentaSeleccionada;
 
 	/**
+	 * cuenta de ahorros seleccionada
+	 */
+	private String claveGenerada;
+	
+	/**
+	 * True si esta verificada en caso contrario false
+	 */
+	private boolean verificada;
+
+	/**
 	 * Monto que se va a transferir
 	 */
 	private double monto;
-	
+
 	/**
 	 * Codigo de verificacion
 	 */
 	private String codigoverificacion;
-	
+
+	/**
+	 * Usuario que ha iniciado sesion
+	 */
+	private Usuario usuario;
+
 	/**
 	 * lista las cuentas de ahorro
 	 */
 	private List<SavingAccount> cuentas;
-	
+
 	/**
 	 * lista las cuentas de ahorro
 	 */
 	private List<CuentaAsociada> asociadas;
-	
+
 	/**
 	 * EJB del consumo de la cuenta de ahorros
 	 */
 	@EJB
 	private SavingAccountEJB savingAccountEJB;
-	
+
 	/**
 	 * EJB de las cuentas asociadas
 	 */
 	@EJB
 	private CuentaAsociadaEJB asociadaCuentaEJB;
-	
+
+	/**
+	 * EJB de la segunda clave
+	 */
+	@EJB
+	private SegundaClaveEJB segundaClaveEJB;
+
 	@PostConstruct
 	public void inicializar() {
 		try {
-			Usuario usuario = Faces.getSessionAttribute("user");
+			usuario = Faces.getSessionAttribute("user");
 			cuentas = savingAccountEJB.listarCuentasCliente(usuario.getCustomer());
 			asociadas = asociadaCuentaEJB.listarCuentas(usuario.getCustomer());
+			verificada = false;
+		} catch (ExcepcionNegocio e1) {
+			Messages.addFlashGlobalError(e1.getMessage());
+			e1.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Messages.addFlashGlobalInfo(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	public void generarClave() {
+		claveGenerada = segundaClaveEJB.generarClave();
+		SegundaClave sc = new SegundaClave();
+		sc.setClave(claveGenerada);
+		segundaClaveEJB.crear(sc);
+		NotificacionesService cliente = new NotificacionesService();
+		Notificaciones servicio = cliente.getNotificacionesPort();
+
+		String endpointURL = "http://104.197.238.134:8080/notificaciones/notificacionesService";
+		BindingProvider bp = (BindingProvider) servicio;
+		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
+
+		Mail correo = new Mail();
+		// Mensaje
+		correo.setBody("Su codigo de verificacion es:" + claveGenerada + "\n \nSu codigo expirara en 90 minutos");
+		//
+		correo.setFrom("idontknow@eam.edu.co");
+		// A quien se le envia
+		correo.setTo(usuario.getCustomer().getEmail());
+		// Asunto
+		correo.setSubject("Codigo de verificacion BANCO TRIVINIERS");
+		RespuestaNotificacion resp = servicio.enviarMail(correo);
+		System.out.println(resp.getMensaje());
+	}
+
+	public void verificar() {
+		SegundaClave sc = segundaClaveEJB.buscar(claveGenerada);
+		if(sc.getFechaGeneracion().before(sc.getFechaVencimiento())){
+		//if(sc.getFechaGeneracion().compareTo(sc.getFechaVencimiento())>0){
+			verificada = true;
+			Messages.addFlashGlobalInfo("Clave verificada");
+		}else{
+			Messages.addFlashGlobalInfo("Esta clave se ha vencido, porfavor genere otra clave "
+					+ "para completar su transaccion");
+		}
+	}
+	
+	public void transferir() {
+		try {
+			savingAccountEJB.tranferenciaInterbancaria(asociadaSeleccionada, cuentaSeleccionada, monto);
+			Messages.addFlashGlobalInfo("Se hizo el avance correctamente");
 		} catch (ExcepcionNegocio e1) {
 			Messages.addFlashGlobalError(e1.getMessage());
 			e1.printStackTrace();
@@ -144,5 +224,4 @@ public class TransferirCuentaAsociada implements Serializable{
 		this.asociadaCuentaEJB = asociadaCuentaEJB;
 	}
 
-	
 }
