@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import org.omnifaces.cdi.ViewScoped;
 import org.omnifaces.util.Faces;
+import org.omnifaces.util.Messages;
 
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Bank;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CuentaAsociada;
@@ -63,6 +64,11 @@ public class CuentaAsociadaControllerAjax implements Serializable{
 	private String nombrecuenta;
 	
 	/**
+	 * Listado de las cuentas asociadas
+	 */
+	private List<CuentaAsociada> cuentasAsociadas;
+	
+	/**
 	 * EJB del banco
 	 */
 	@EJB
@@ -79,8 +85,12 @@ public class CuentaAsociadaControllerAjax implements Serializable{
 	public void inicializar(){
 		
 		bancos = bankEJB.listarBancos();
+		actualizarListadoCuentas();
 	}
 	
+	/**
+	 * Metodo para asociarle una cuenta al cliente logeado
+	 */
 	public void asociar(){
 		
 		CuentaAsociada ca = new CuentaAsociada();
@@ -102,12 +112,39 @@ public class CuentaAsociadaControllerAjax implements Serializable{
 		bancoSeleccionado=null;
 		numerocuenta="";
 		nombrecuenta="";
+		
+		//ActualizarTabla
+		actualizarListadoCuentas();
 	}
 	
 	public void cancelar(){
 		
 	}
 	
+	/**
+	 * metodo para eliminar una cuenta asociada del cliente
+	 * @param cuenta, cuenta asociada
+	 */
+	public void eliminarCuenta(CuentaAsociada cuenta){
+		//int id = cuenta.getId();
+		//CuentaAsociada ca = cuentaAsociadaEJB.buscar(id);
+		cuentaAsociadaEJB.eliminar(cuenta.getId());
+		Messages.addFlashGlobalInfo("Se ha eliminado la cuenta asociada con exito!");
+		actualizarListadoCuentas();
+	}
+	
+	/**
+	 * metodo para actualizar la tabla con el listado de cuentas asociadas
+	 */
+	public void actualizarListadoCuentas(){
+		Usuario usuario = Faces.getSessionAttribute("user");
+		cuentasAsociadas = cuentaAsociadaEJB.listarCuentas(usuario.getCustomer());
+	}
+	
+	
+	public void verificarCuenta (){
+		
+	}
 	
 	
 	public String getNombretitular() {
@@ -165,6 +202,31 @@ public class CuentaAsociadaControllerAjax implements Serializable{
 	public void setNombrecuenta(String nombrecuenta) {
 		this.nombrecuenta = nombrecuenta;
 	}
+
+	public List<CuentaAsociada> getCuentasAsociadas() {
+		return cuentasAsociadas;
+	}
+
+	public void setCuentasAsociadas(List<CuentaAsociada> cuentasAsociadas) {
+		this.cuentasAsociadas = cuentasAsociadas;
+	}
+
+	public BankEJB getBankEJB() {
+		return bankEJB;
+	}
+
+	public void setBankEJB(BankEJB bankEJB) {
+		this.bankEJB = bankEJB;
+	}
+
+	public CuentaAsociadaEJB getCuentaAsociadaEJB() {
+		return cuentaAsociadaEJB;
+	}
+
+	public void setCuentaAsociadaEJB(CuentaAsociadaEJB cuentaAsociadaEJB) {
+		this.cuentaAsociadaEJB = cuentaAsociadaEJB;
+	}
+	
 	
 	
 }

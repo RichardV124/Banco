@@ -76,7 +76,7 @@
 			<h:panelGrid id="panelbtns" columns="2">
 				<p:commandButton id="btnregistrar"
 					value="#{msj['asociacioncuenta.asociar']}"
-					process="@this paneldatos" update="paneldatos" 
+					process="@this paneldatos" update="paneldatos tablaCuentasAsociadas" 
 					action="#{cuentaAsociadaController.asociar}" />
 
 				<p:commandButton id="btncancelar"
@@ -85,6 +85,42 @@
 					action="#{cuentaAsociadaController.cancelar}" />
 			</h:panelGrid>
 
+
+			<p:panel header="Listado de cuentas asociadas" id="ptcuentas">
+
+				<p:dataTable id="tablaCuentasAsociadas" value="#{cuentaAsociadaController.cuentasAsociadas}"
+					var="cuenta" border="1">
+
+					<p:column headerText="Nombre">
+
+						<h:outputLabel value="#{cuenta.name}" />
+					</p:column>
+
+					<p:column headerText="Titular">
+
+						<h:outputLabel value="#{cuenta.ownerName}" />
+					</p:column>
+
+					<p:column headerText="Estado">
+
+						<h:outputLabel value="#{cuenta.estado}" />
+					</p:column>
+
+					<p:column headerText="Eliminar">
+						<p:commandButton action="#{cuentaAsociadaController.eliminarCuenta(cuenta)}"
+							process="@this" value="#{msj['asociacioncuenta.eliminar']}"
+							update="tablaCuentasAsociadas" />
+					</p:column>
+					
+					<p:column headerText="Verificar">
+						<p:commandButton action="#{cuentaAsociadaController.verificarCuenta()}"
+							process="@this" value="#{msj['asociacioncuenta.verificar']}"
+							update="tablaCuentasAsociadas" />
+					</p:column>
+
+				</p:dataTable>
+
+			</p:panel>
 		</h:form>
 
 	</ui:define>
