@@ -44,19 +44,31 @@ public class Customer implements Serializable{
 	@OneToMany(fetch=FetchType.EAGER,mappedBy="customer",cascade={})
 	private List<Product> productos;
 	
+	@Column(name="email")
+	private String email;
+	
+	@Column(name="telefono")
+	private String telefono;
+	
 	public Customer() {
 		// TODO Auto-generated constructor stub
 	}
 
-    public Customer(String idType, String idNum, String name, String lastName) {
-        this.idType = idType;
-        this.idNum = idNum;
-        this.name = name;
-        this.lastName = lastName;
-       this.productos=null;
-    }
+    public Customer(String idType, String idNum, String name, String lastName, List<Product> productos, String email,
+			String telefono) {
+		super();
+		this.idType = idType;
+		this.idNum = idNum;
+		this.name = name;
+		this.lastName = lastName;
+		this.productos = productos;
+		this.email = email;
+		this.telefono = telefono;
+	}
 
-    public String getIdType() {
+
+
+	public String getIdType() {
         return idType;
     }
 
@@ -96,8 +108,22 @@ public class Customer implements Serializable{
 	public void setProductos(List<Product> productos) {
 		this.productos = productos;
 	}
-	
-	
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getNumberPhone() {
+		return telefono;
+	}
+
+	public void setNumberPhone(String numberPhone) {
+		this.telefono = numberPhone;
+	}
 	
 	
 }

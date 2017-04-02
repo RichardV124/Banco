@@ -74,13 +74,10 @@ public class CuentaAsociadaEJB {
 	 * @param ca, cuenta asociada a eliminar
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void eliminar(CuentaAsociada ca){
-		CuentaAsociada c = buscar(ca.getId());
-		if(c!=null){
+	public void eliminar(int id){
+			CuentaAsociada ca = em.getReference(CuentaAsociada.class, id);
+			ca.getId();
 			em.remove(ca);
-		}else{
-			throw new ExcepcionNegocio("No existe tal cuenta asociada");
-		}
 	}
 
 }

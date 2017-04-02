@@ -38,6 +38,12 @@ public class BankEJB {
 		}	
 	}
 	
+	/**
+	 * Metodo para buscar un banco
+	 * @param id, identificador del banco
+	 * @return el banco si lo encuentra
+	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public Bank buscar (String id){
 		Bank b = em.find(Bank.class, id);
 		if(b==null){
