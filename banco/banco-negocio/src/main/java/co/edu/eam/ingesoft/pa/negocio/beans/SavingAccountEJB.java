@@ -20,6 +20,7 @@ import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CreditCardConsume;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Customer;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Franchise;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SavingAccount;
+import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SegundaClave;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Transaction;
 import co.edu.eam.ingesoft.pa.negocio.beans.remote.ISavingAccountRemote;
 import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
@@ -40,6 +41,9 @@ public class SavingAccountEJB {
 
 	@EJB
 	private CreditCardConsumeEJB creditConsumeEJB;
+	
+	@EJB
+	private SegundaClaveEJB segundaClaveEJB;
 
 	/**
 	 * MEtodo para crear una cuenta de ahorros...
@@ -89,6 +93,33 @@ public class SavingAccountEJB {
 			sav.setAmmount(sav.getAmmount() - monto);
 			em.merge(sav);
 			crearTransaction(sav, monto);
+		}
+	}
+	
+	/**
+	 * Metodo para consignar un monto de una cuenta a otra cuenta de diferente banco
+	 * @param sav cuenta de ahorros de la cual se va a retirar el saldo
+	 * @param monto
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void consignacionInterbancaria(SavingAccount sav, double monto, String clave) {
+		SegundaClave sc = segundaClaveEJB.buscar(clave);
+		if(sc!=null){
+			Calendar calendar = Calendar.getInstance();
+			Date fechaActual = calendar.getTime();
+			if(sc.getFechaVencimiento().getTime()<fechaActual.getTime()){
+				if (sav.getAmmount() < monto) {
+					throw new ExcepcionNegocio("Esta cuenta no tiene suficiente saldo.");
+				} else {
+					sav.setAmmount(sav.getAmmount() - monto);
+					em.merge(sav);
+					crearTransaction(sav, monto);
+				}
+			}else{
+				throw new ExcepcionNegocio("Su clave está vencida");
+			}
+		} else{
+			throw new ExcepcionNegocio("Verifique su clave");
 		}
 	}
 
