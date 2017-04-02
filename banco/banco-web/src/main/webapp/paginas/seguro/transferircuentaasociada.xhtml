@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" template="/template/index.xhtml">
+
+	<ui:define name="cuerpo">
+
+		<p:messages id="facesMessage" autoUpdate="true" globalOnly="true"
+			closable="true" />
+
+		<h:form prependId="false">
+
+			<p:panel id="paneldatos" header="Avance a cuenta de ahorros">
+
+				<h:panelGrid columns="4">
+				
+					<h:outputLabel id="lblnumerocuenta"
+						value="#{msj['transferircuentaasociada.numerocuenta']}:" />
+					<h:selectOneMenu id="cbnumerocuenta"
+						value="#{controladorTransferirAjax.cuentaSeleccionada}">
+						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
+						<f:selectItems value="#{controladorTransferirAjax.cuentas}" var="cuenta"
+							itemValue="#{cuenta.number}" itemLabel="#{cuenta.number}" />
+					</h:selectOneMenu>
+					<p:message for="cbnumerocuenta" />
+					<h:outputLabel id="lblcuentavacia" value="" />
+
+					<h:outputLabel id="lblnumerocuentaasociada"
+						value="#{msj['transferircuentaasociada.numerocuentaasociada']}:" />
+					<h:selectOneMenu id="cbnumeroasociada"
+						value="#{controladorTransferirAjax.asociadaSeleccionada}">
+						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
+						<f:selectItems value="#{controladorTransferirAjax.asociadas}"
+							var="asociada" itemValue="#{asociada.number}"
+							itemLabel="#{asociada.number}" />
+					</h:selectOneMenu>
+					<p:message for="cbnumeroasociada" />
+					<h:outputLabel id="lblasociadavacia" value="" />
+
+					<h:outputLabel id="lblmonto"
+						value="#{msj['transferircuentaasociada.monto']}:" />
+					<h:inputText id="tfmonto"
+						value="#{controladorTransferirAjax.monto}" />
+					<p:message for="tfmonto" />
+					<h:outputLabel id="lblmontovacio" value="" />
+
+
+					<h:outputLabel id="lblcodigoverif"
+						value="#{msj['avancecuentaahorros.monto']}:" />
+					<h:inputText id="tfcodverficacion"
+						value="#{controladorTransferirAjax.codigoverificacion}" />
+					<p:message for="tfcodverficacion" />
+					<p:commandButton id="btnVerificar"
+						value="#{msj['transferircuentaasociada.verificar']}"
+						process="@this paneldatos" update="paneldatos"
+						action="#{controladorTransferirAjax.verificar}" />
+
+				</h:panelGrid>
+
+			</p:panel>
+
+			<h:panelGrid id="panelbtns" columns="2">
+				<p:commandButton id="btnAceptar"
+					value="#{msj['avancecuentaahorros.aceptar']}"
+					process="@this paneldatos" update="paneldatos"
+					action="#{controladorTransferirAjax.transferir}" />
+
+				<p:commandButton id="btnCancelar"
+					value="#{msj['avancecuentaahorros.cancelar']}" ajax="false"
+					action="#{controladorTransferirAjax.cancelar()}" />
+			</h:panelGrid>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
