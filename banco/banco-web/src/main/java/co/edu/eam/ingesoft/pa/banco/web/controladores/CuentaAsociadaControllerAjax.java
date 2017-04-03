@@ -17,6 +17,7 @@ import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CuentaAsociada;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Usuario;
 import co.edu.eam.ingesoft.pa.negocio.beans.BankEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.CuentaAsociadaEJB;
+import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
 
 @Named("cuentaAsociadaController")
 @ViewScoped
@@ -82,9 +83,17 @@ public class CuentaAsociadaControllerAjax implements Serializable{
 	
 	@PostConstruct
 	public void inicializar(){
-		
+		try{
 		bancos = bankEJB.listarBancos();
 		actualizarListadoCuentas();
+		}catch(ExcepcionNegocio e1){
+			Messages.addFlashGlobalError(e1.getMessage());
+			e1.printStackTrace();
+		}catch (Exception e) {
+			// TODO Auto-generated catch block
+			Messages.addFlashGlobalInfo(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -136,8 +145,17 @@ public class CuentaAsociadaControllerAjax implements Serializable{
 	 * metodo para actualizar la tabla con el listado de cuentas asociadas
 	 */
 	public void actualizarListadoCuentas(){
+		try{
 		Usuario usuario = Faces.getSessionAttribute("user");
 		cuentasAsociadas = cuentaAsociadaEJB.listarCuentas(usuario.getCustomer());
+	}catch(ExcepcionNegocio e1){
+		Messages.addFlashGlobalError(e1.getMessage());
+		e1.printStackTrace();
+	}catch (Exception e) {
+		// TODO Auto-generated catch block
+		Messages.addFlashGlobalInfo(e.getMessage());
+		e.printStackTrace();
+	}
 	}
 	
 	
