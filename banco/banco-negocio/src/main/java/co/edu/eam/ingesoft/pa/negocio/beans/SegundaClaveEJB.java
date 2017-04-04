@@ -11,10 +11,16 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.xml.ws.BindingProvider;
 
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SegundaClave;
 import co.edu.eam.ingesoft.pa.negocio.beans.remote.ISegundaClaveRemote;
 import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
+import co.edu.eam.pa.clientews.Mail;
+import co.edu.eam.pa.clientews.Notificaciones;
+import co.edu.eam.pa.clientews.NotificacionesService;
+import co.edu.eam.pa.clientews.RespuestaNotificacion;
+import co.edu.eam.pa.clientews.Sms;
 
 
 @LocalBean
@@ -89,5 +95,46 @@ public class SegundaClaveEJB {
 		Date fechaVencimiento = calendar.getTime();
 		fechaVencimiento.setMinutes(fechaVencimiento.getMinutes() + 2);
 		return fechaVencimiento;
+	}
+	
+	public void enviarSms(String claveGenerada,String numeroTelefono){
+		
+		NotificacionesService cliente = new NotificacionesService();
+		Notificaciones servicio = cliente.getNotificacionesPort();
+
+		String endpointURL = "http://104.197.238.134:8080/notificaciones/notificacionesService";
+		BindingProvider bp = (BindingProvider) servicio;
+		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
+
+		Sms msj = new Sms();
+		// Mensaje
+		msj.setTexto("Su codigo de verificacion es:" + claveGenerada + "\n \nSu codigo expirara en 90 minutos");
+		// A quien se le envia
+		msj.setTo(numeroTelefono);
+		
+		RespuestaNotificacion resp = servicio.enviarSMS(msj);
+		System.out.println(resp.getMensaje());
+		
+	}
+	
+	public void enviarEmail(String claveGenerada,String email){
+		NotificacionesService cliente = new NotificacionesService();
+		Notificaciones servicio = cliente.getNotificacionesPort();
+
+		String endpointURL = "http://104.197.238.134:8080/notificaciones/notificacionesService";
+		BindingProvider bp = (BindingProvider) servicio;
+		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
+
+		Mail correo = new Mail();
+		// Mensaje
+		correo.setBody("Su codigo de verificacion es:" + claveGenerada + "\n \nSu codigo expirara en 90 minutos");
+		//
+		correo.setFrom("idontknow@eam.edu.co");
+		// A quien se le envia
+		correo.setTo(email);
+		// Asunto
+		correo.setSubject("Codigo de verificacion BANCO TRIVINIERS");
+		RespuestaNotificacion resp = servicio.enviarMail(correo);
+		System.out.println(resp.getMensaje());
 	}
 }

@@ -114,24 +114,8 @@ public class TransferirCuentaAsociada implements Serializable {
 		SegundaClave sc = new SegundaClave();
 		sc.setClave(claveGenerada);
 		segundaClaveEJB.crear(sc);
-		NotificacionesService cliente = new NotificacionesService();
-		Notificaciones servicio = cliente.getNotificacionesPort();
-
-		String endpointURL = "http://104.197.238.134:8080/notificaciones/notificacionesService";
-		BindingProvider bp = (BindingProvider) servicio;
-		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
-
-		Mail correo = new Mail();
-		// Mensaje
-		correo.setBody("Su codigo de verificacion es:" + claveGenerada + "\n \nSu codigo expirara en 90 minutos");
-		//
-		correo.setFrom("idontknow@eam.edu.co");
-		// A quien se le envia
-		correo.setTo(usuario.getCustomer().getEmail());
-		// Asunto
-		correo.setSubject("Codigo de verificacion BANCO TRIVINIERS");
-		RespuestaNotificacion resp = servicio.enviarMail(correo);
-		System.out.println(resp.getMensaje());
+		segundaClaveEJB.enviarEmail(claveGenerada, usuario.getCustomer().getEmail());
+//		segundaClaveEJB.enviarSms(claveGenerada, usuario.getCustomer().getNumberPhone());
 	}
 
 	public void verificar() {
