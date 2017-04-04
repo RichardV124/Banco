@@ -10,11 +10,21 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.xml.ws.BindingProvider;
 
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CuentaAsociada;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Customer;
 import co.edu.eam.ingesoft.pa.negocio.beans.remote.ICuentaAsociadaRemote;
 import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.InterbancarioWS;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.InterbancarioWS_Service;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.RegistrarCuentaAsociada;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.RespuestaServicio;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.TipoDocumentoEnum;
+import co.edu.eam.pa.clientews.Notificaciones;
+import co.edu.eam.pa.clientews.NotificacionesService;
+import co.edu.eam.pa.clientews.RespuestaNotificacion;
+import co.edu.eam.pa.clientews.Sms;
 
 @LocalBean
 @Stateless
@@ -78,6 +88,49 @@ public class CuentaAsociadaEJB {
 			CuentaAsociada ca = em.getReference(CuentaAsociada.class, id);
 			ca.getId();
 			em.remove(ca);
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public void verificarCuenta(CuentaAsociada cuenta){
+		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
+		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
+
+		String endpointURL = "http://104.197.238.134:8080/interbancario/Interbancario";
+		BindingProvider bp = (BindingProvider) servicio;
+		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
+
+		RegistrarCuentaAsociada ca = new RegistrarCuentaAsociada();
+		// Id banco
+		ca.setIdbanco(cuenta.getBank().getId());
+		// Tipo de documento
+		TipoDocumentoEnum tipoDoc = null;
+		tipoDoc.fromValue(cuenta.getOwnerTypeId());
+		ca.setTipodoc(tipoDoc);
+		//numero documento
+		ca.setNumerodoc(cuenta.getOwnerNumId());
+		//nombre
+		ca.setNombre(cuenta.getName());
+		//numero cuenta
+		ca.setNumerocuenta(cuenta.getNumber());
+		
+		RespuestaServicio resp = servicio.registrarCuentaAsociada(ca.getIdbanco(), ca.getTipodoc(), ca.getNumerodoc(), ca.getNombre(), ca.getNumerocuenta());
+		System.out.println(resp.getMensaje());
+	}
+	
+	/**
+	 * MEtodo para editar una cuenta asociada...
+	 * @param ca
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void editarCustomer(CuentaAsociada ca){
+		CuentaAsociada busc=buscar(ca.getId());
+		//no existe,no se puede editar...
+		if(busc!=null){
+			em.merge(ca);
+		}else{
+			throw new ExcepcionNegocio("No existe la cuenta a editar");
+		}
+		
 	}
 
 }
