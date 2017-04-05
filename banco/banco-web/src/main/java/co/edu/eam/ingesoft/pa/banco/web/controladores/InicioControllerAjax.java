@@ -65,9 +65,18 @@ public class InicioControllerAjax implements Serializable {
 		}
 	}
 	
-	public String redirigir(){
+	public String redirigirAvanceCuenta(){
 		return "/paginas/seguro/avancecuentaahorros.xhtml?faces-redirect=true";
 	}
+	
+	public String redirigirAsociarCuenta(){
+		return "/paginas/seguro/asociacioncuenta.xhtml?faces-redirect=true";
+	}
+	
+	public String redirigirTransferirCuentaAsociada(){
+		return "/paginas/seguro/transferircuentaasociada.xhtml?faces-redirect=true";
+	}
+
 
 	public List<CreditCard> getTarjetas() {
 		return tarjetas;

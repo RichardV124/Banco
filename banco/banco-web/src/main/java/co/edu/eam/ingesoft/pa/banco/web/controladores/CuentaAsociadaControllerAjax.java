@@ -18,89 +18,94 @@ import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Usuario;
 import co.edu.eam.ingesoft.pa.negocio.beans.BankEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.CuentaAsociadaEJB;
 import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.Banco;
 
 @Named("cuentaAsociadaController")
 @ViewScoped
-public class CuentaAsociadaControllerAjax implements Serializable{
+public class CuentaAsociadaControllerAjax implements Serializable {
 
 	/**
 	 * Nombre del Titular
 	 */
-	@NotNull(message="Debe ingresar el nombre del titular")
+	@NotNull(message = "Debe ingresar el nombre del titular")
 	private String nombretitular;
-	
+
 	/**
 	 * Tipo de documento del customer
 	 */
-	@NotNull(message="Debe seleccionar el tipo de documento")
+	@NotNull(message = "Debe seleccionar el tipo de documento")
 	private String tipodocumento;
-	
+
 	/**
 	 * Numero de identificacion del titular
 	 */
-	@NotNull(message="Debe ingresar el numero de documento")
+	@NotNull(message = "Debe ingresar el numero de documento")
 	private String numerodocumento;
-	
+
 	/**
 	 * banco selecionado
 	 */
 	private String bancoSeleccionado;
+
+//	/**
+//	 * lista de los bancos registrados
+//	 */
+//	private List<Banco> bancos;
 	
 	/**
 	 * lista de los bancos registrados
 	 */
 	private List<Bank> bancos;
-	
+
 	/**
 	 * numero de la cuenta a asociar
 	 */
-	@NotNull(message="Debe ingresar el numero de la cuenta")
+	@NotNull(message = "Debe ingresar el numero de la cuenta")
 	private String numerocuenta;
-	
+
 	/**
 	 * nombre de la cuenta a asociar
 	 */
-	@NotNull(message="Debe ingresar el nombre de la cuenta")
+	@NotNull(message = "Debe ingresar el nombre de la cuenta")
 	private String nombrecuenta;
-	
+
 	/**
 	 * Listado de las cuentas asociadas
 	 */
 	private List<CuentaAsociada> cuentasAsociadas;
-	
+
 	/**
 	 * EJB del banco
 	 */
 	@EJB
 	private BankEJB bankEJB;
-	
+
 	/**
 	 * EJB de la cuenta asociada
 	 */
 	@EJB
 	private CuentaAsociadaEJB cuentaAsociadaEJB;
 
-	
 	@PostConstruct
-	public void inicializar(){
-		try{
-		bancos = bankEJB.listarBancos();
-		actualizarListadoCuentas();
-		}catch(ExcepcionNegocio e1){
+	public void inicializar() {
+		try {
+			bancos = bankEJB.listarBancos();
+			actualizarListadoCuentas();
+		} catch (ExcepcionNegocio e1) {
 			Messages.addFlashGlobalError(e1.getMessage());
 			e1.printStackTrace();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			Messages.addFlashGlobalInfo(e.getMessage());
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Metodo para asociarle una cuenta al cliente logeado
 	 */
-	public void asociar(){
-		
+	public void asociar() {
+
 		CuentaAsociada ca = new CuentaAsociada();
 		ca.setOwnerName(nombretitular);
 		ca.setOwnerTypeId(tipodocumento);
@@ -112,58 +117,58 @@ public class CuentaAsociadaControllerAjax implements Serializable{
 		Usuario usuario = Faces.getSessionAttribute("user");
 		ca.setCustomer(usuario.getCustomer());
 		cuentaAsociadaEJB.crear(ca);
-		
-		//limpiar campos del formulario
-		nombretitular="";
-		tipodocumento=null;
-		numerodocumento="";
-		bancoSeleccionado=null;
-		numerocuenta="";
-		nombrecuenta="";
-		
-		//ActualizarTabla
+
+		// limpiar campos del formulario
+		nombretitular = "";
+		tipodocumento = null;
+		numerodocumento = "";
+		bancoSeleccionado = null;
+		numerocuenta = "";
+		nombrecuenta = "";
+
+		// ActualizarTabla
 		actualizarListadoCuentas();
 	}
-	
-	public void cancelar(){
-		
+
+	public void cancelar() {
+
 	}
-	
+
 	/**
 	 * metodo para eliminar una cuenta asociada del cliente
-	 * @param cuenta, cuenta asociada
+	 * 
+	 * @param cuenta,
+	 *            cuenta asociada
 	 */
-	public void eliminarCuenta(CuentaAsociada cuenta){
-		//int id = cuenta.getId();
-		//CuentaAsociada ca = cuentaAsociadaEJB.buscar(id);
+	public void eliminarCuenta(CuentaAsociada cuenta) {
+		// int id = cuenta.getId();
+		// CuentaAsociada ca = cuentaAsociadaEJB.buscar(id);
 		cuentaAsociadaEJB.eliminar(cuenta.getId());
 		Messages.addFlashGlobalInfo("Se ha eliminado la cuenta asociada con exito!");
 		actualizarListadoCuentas();
 	}
-	
+
 	/**
 	 * metodo para actualizar la tabla con el listado de cuentas asociadas
 	 */
-	public void actualizarListadoCuentas(){
-		try{
-		Usuario usuario = Faces.getSessionAttribute("user");
-		cuentasAsociadas = cuentaAsociadaEJB.listarCuentas(usuario.getCustomer());
-	}catch(ExcepcionNegocio e1){
-		Messages.addFlashGlobalError(e1.getMessage());
-		e1.printStackTrace();
-	}catch (Exception e) {
-		// TODO Auto-generated catch block
-		Messages.addFlashGlobalInfo(e.getMessage());
-		e.printStackTrace();
+	public void actualizarListadoCuentas() {
+		try {
+			Usuario usuario = Faces.getSessionAttribute("user");
+			cuentasAsociadas = cuentaAsociadaEJB.listarCuentas(usuario.getCustomer());
+		} catch (ExcepcionNegocio e1) {
+			Messages.addFlashGlobalError(e1.getMessage());
+			e1.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Messages.addFlashGlobalInfo(e.getMessage());
+			e.printStackTrace();
+		}
 	}
+
+	public void verificarCuenta() {
+
 	}
-	
-	
-	public void verificarCuenta (){
-		
-	}
-	
-	
+
 	public String getNombretitular() {
 		return nombretitular;
 	}
@@ -243,7 +248,5 @@ public class CuentaAsociadaControllerAjax implements Serializable{
 	public void setCuentaAsociadaEJB(CuentaAsociadaEJB cuentaAsociadaEJB) {
 		this.cuentaAsociadaEJB = cuentaAsociadaEJB;
 	}
-	
-	
-	
+
 }
