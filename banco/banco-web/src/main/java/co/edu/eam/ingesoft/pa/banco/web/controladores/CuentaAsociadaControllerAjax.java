@@ -165,8 +165,8 @@ public class CuentaAsociadaControllerAjax implements Serializable {
 		}
 	}
 
-	public void verificarCuenta() {
-
+	public void verificarCuenta (CuentaAsociada cuenta){
+		cuentaAsociadaEJB.verificarCuenta(cuenta);
 	}
 
 	public String getNombretitular() {

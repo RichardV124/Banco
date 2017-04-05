@@ -113,7 +113,7 @@
 					</p:column>
 					
 					<p:column headerText="Verificar">
-						<p:commandButton action="#{cuentaAsociadaController.verificarCuenta()}"
+						<p:commandButton action="#{cuentaAsociadaController.verificarCuenta(cuenta)}"
 							process="@this" value="#{msj['asociacioncuenta.verificar']}"
 							update="tablaCuentasAsociadas" />
 					</p:column>
