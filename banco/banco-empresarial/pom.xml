@@ -28,7 +28,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>${project.artifactId}</finalName>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -37,14 +37,28 @@
 				<configuration>
 					<version>7</version>
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
+					<finalName>banco3</finalName>
 					<fileNameMapping>no-version</fileNameMapping>
+					
+					<modules>
+						<ejbModule>
+							<groupId>co.edu.eam.ingesoft.avanzada</groupId>
+							<artifactId>banco-negocio</artifactId>
+							<bundleFileName>banco-negocio3</bundleFileName>
+						</ejbModule>
+						<webModule>
+							<groupId>co.edu.eam.ingesoft.avanzada</groupId>
+							<artifactId>banco-web</artifactId>
+							<contextRoot>/banco3</contextRoot>
+						</webModule>
+					</modules>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.wildfly.plugins</groupId>
 				<artifactId>wildfly-maven-plugin</artifactId>
 				<configuration>
-					<filename>${project.artifactId}.ear</filename>
+					<filename>banco3.ear</filename>
 					<skip>false</skip>
 					<hostname>localhost</hostname>
 					<port>9991</port>
