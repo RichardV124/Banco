@@ -90,12 +90,12 @@ public class CuentaAsociadaEJB {
 			em.remove(ca);
 	}
 	
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void verificarCuenta(CuentaAsociada cuenta){
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
-		String endpointURL = "http://104.197.238.134:8080/interbancario/Interbancario";
+		String endpointURL = "http://104.197.238.134:8080/interbancario/InterbancarioWS";
 		BindingProvider bp = (BindingProvider) servicio;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 
@@ -104,7 +104,7 @@ public class CuentaAsociadaEJB {
 		ca.setIdbanco(cuenta.getBank().getId());
 		// Tipo de documento
 		TipoDocumentoEnum tipoDoc = null;
-		tipoDoc.fromValue(cuenta.getOwnerTypeId());
+		tipoDoc = tipoDoc.fromValue(cuenta.getOwnerTypeId());
 		ca.setTipodoc(tipoDoc);
 		//numero documento
 		ca.setNumerodoc(cuenta.getOwnerNumId());
@@ -114,7 +114,11 @@ public class CuentaAsociadaEJB {
 		ca.setNumerocuenta(cuenta.getNumber());
 		
 		RespuestaServicio resp = servicio.registrarCuentaAsociada(ca.getIdbanco(), ca.getTipodoc(), ca.getNumerodoc(), ca.getNombre(), ca.getNumerocuenta());
+		
 		System.out.println(resp.getMensaje());
+		
+		cuenta.setEstado(resp.getMensaje());
+		editar(cuenta);
 	}
 	
 	/**
@@ -122,7 +126,7 @@ public class CuentaAsociadaEJB {
 	 * @param ca
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void editarCustomer(CuentaAsociada ca){
+	public void editar(CuentaAsociada ca){
 		CuentaAsociada busc=buscar(ca.getId());
 		//no existe,no se puede editar...
 		if(busc!=null){
