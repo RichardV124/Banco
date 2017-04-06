@@ -51,13 +51,19 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 					<li class="current"><a class="smoothscroll"  href="#intro" title="">Home</a></li>
 					<li><a class="smoothscroll"  href="#process" title="">Process</a></li>
 					<li><a class="smoothscroll"  href="#features" title="">Features</a></li>
-					<li><a class="smoothscroll"  href="#pricing" title="">Pricing</a></li>
-					<li><h:commandLink
-									action="#{inicioAjax.redirigir()}"
-									value="Pago tarjeta cuenta avance" rendered="#{sessionControl.sesion}" /></li>				
-					<li><h:commandLink
-									action="#{sessionControl.cerrarSession()}"
-									value="Cerrar Sesion" rendered="#{sessionControl.sesion}" /></li>				
+						<li><h:commandLink
+								action="#{inicioAjax.redirigirAsociacionCuenta"
+								value="Asociar una cuenta" rendered="#{sessionControl.sesion}" /></li>
+						<li><h:commandLink
+								action="#{inicioAjax.redirigirAvanceCuenta}"
+								value="Pago tarjeta cuenta avance"
+								rendered="#{sessionControl.sesion}" /></li>
+						<li><h:commandLink
+								action="#{inicioAjax.redirigirTransferirCuentaAsociada}"
+								value="Tranferir saldo a cuentas asociadas"
+								rendered="#{sessionControl.sesion}" /></li>
+						<li><h:commandLink action="#{sessionControl.cerrarSession()}"
+								value="Cerrar Sesion" rendered="#{sessionControl.sesion}" /></li>				
 				</ul>
 				</h:form>
 			</nav>
