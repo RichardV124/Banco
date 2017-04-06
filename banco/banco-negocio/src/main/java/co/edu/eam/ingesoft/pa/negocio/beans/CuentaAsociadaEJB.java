@@ -80,6 +80,23 @@ public class CuentaAsociadaEJB {
 	}
 	
 	/**
+	 * metodo para listar las cuentas asociadas de un cliente
+	 * @param cus, cliente al que se le listaran las cuentas asociadas
+	 * @return la lista con las cuentas que el cliente tiene asociadas
+	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public List<CuentaAsociada> listarCuentasAsociadasValidadas(Customer cus){
+		Query query = em.createNamedQuery(CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS_VALIDADAS);
+		query.setParameter(1, cus);
+		List<CuentaAsociada> cuentas = query.getResultList();
+		if (cuentas.isEmpty()) {
+			throw new ExcepcionNegocio("Este cliente no tiene ninguna cuenta asociada");
+		} else {
+			return cuentas;
+		}
+	}
+	
+	/**
 	 * metodo para eliminar una cuenta asociada
 	 * @param ca, cuenta asociada a eliminar
 	 */

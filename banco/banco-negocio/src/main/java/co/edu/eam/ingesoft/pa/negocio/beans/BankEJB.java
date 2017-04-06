@@ -10,11 +10,16 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.xml.ws.BindingProvider;
 
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Bank;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Customer;
 import co.edu.eam.ingesoft.pa.negocio.beans.remote.IBankRemote;
 import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.Banco;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.InterbancarioWS;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.InterbancarioWS_Service;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.RespuestaServicio;
 
 @LocalBean
 @Stateless
@@ -38,6 +43,22 @@ public class BankEJB {
 		}	
 	}
 	
+//	/**
+//	 * metodo para listar los bancos registrados
+//	 */
+//	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+//	public List<Banco> listarBancos(){
+//		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
+//		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
+//		
+//		String endpointURL = "http://104.197.238.134:8080/interbancario/InterbancarioWS?wsdl";
+//		BindingProvider bp = (BindingProvider) servicio;
+//		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
+//		
+//		List<Banco> bancos = servicio.listarBancos();
+////	    RespuestaServicio resp = (RespuestaServicio) servicio.listarBancos();
+//		return bancos;
+//	}
 	/**
 	 * Metodo para buscar un banco
 	 * @param id, identificador del banco

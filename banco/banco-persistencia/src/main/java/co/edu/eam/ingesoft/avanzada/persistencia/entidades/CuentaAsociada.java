@@ -17,11 +17,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name="T_CUENTA_ASOCIADA")
 @NamedQueries({ 
-	@NamedQuery(name = CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS, query = "SELECT ca FROM CuentaAsociada ca WHERE ca.customer=?1") 
+	@NamedQuery(name = CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS, query = "SELECT ca FROM CuentaAsociada ca WHERE ca.customer=?1"), 
+	@NamedQuery(name = CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS_VALIDADAS, query = "SELECT ca FROM CuentaAsociada ca WHERE ca.customer=?1 "
+			+ "AND ca.estado='Asociada'")
 	})
 public class CuentaAsociada implements Serializable{
 	
 	public static final String CONSULTA_LISTAR_CUENTAS_ASOCIADAS = "CuentaAsociada.ListarCuentas";
+	
+	public static final String CONSULTA_LISTAR_CUENTAS_ASOCIADAS_VALIDADAS = "CuentaAsociada.ListarCuentasAsociadas";
 	
 	/**
 	 * id autoincrementable de la cuenta asociada
