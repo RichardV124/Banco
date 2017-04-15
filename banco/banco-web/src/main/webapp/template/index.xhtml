@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-xmlns:h="http://java.sun.com/jsf/html"
-xmlns:f="http://java.sun.com/jsf/core"
-xmlns:ui="http://java.sun.com/jsf/facelets"
->
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:head>
 
-   <!--- basic page needs
+	<!--- basic page needs
    ================================================== -->
-   <meta charset="utf-8"/>
+	<meta charset="utf-8" />
 	<title>Lhander</title>
-	<meta name="description" content=""/>  
-	<meta name="author" content=""/>
+	<meta name="description" content="" />
+	<meta name="author" content="" />
 
-   <!-- mobile specific metas
+	<!-- mobile specific metas
    ================================================== -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, maximum-scale=1" />
 
- 	<!-- CSS
+	<!-- CSS
    ================================================== -->
-   <link rel="stylesheet" href="#{request.contextPath}/css/base.css"/>  
-   <link rel="stylesheet" href="#{request.contextPath}/css/main.css"/>
-   <link rel="stylesheet" href="#{request.contextPath}/css/vendor.css"/>     
+	<link rel="stylesheet" href="#{request.contextPath}/css/base.css" />
+	<link rel="stylesheet" href="#{request.contextPath}/css/main.css" />
+	<link rel="stylesheet" href="#{request.contextPath}/css/vendor.css" />
 
-   <!-- script
+	<!-- script
    ================================================== -->
 	<script src="#{request.contextPath}/js/modernizr.js"></script>
 
-   <!-- favicons
+	<!-- favicons
 	================================================== -->
-	<link rel="icon" type="image/png" href="#{request.contextPath}/favicon.png"/>
+	<link rel="icon" type="image/png"
+		href="#{request.contextPath}/favicon.png" />
 
 </h:head>
 
@@ -37,25 +38,22 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 
 	<!-- header 
    ================================================== -->
-   <header>
+	<header>
 
-   	<div class="row">
+		<div class="row">
 
-   		<div class="logo">
-	         <a href="index.html">Banquito</a>
-	      </div>
+			<div class="logo">
+				<a href="index.html">Banquito</a>
+			</div>
 
-	   	<nav id="main-nav-wrap">
-	   	<h:form>
-				<ul class="main-navigation">
-					<li><h:commandLink
-								action="#{inicioAjax.redirigirInicio()}"
-								value="Inicio" 
-								rendered="#{sessionControl.sesion}" /></li>
+			<nav id="main-nav-wrap">
+				<h:form>
+					<ul class="main-navigation">
+						<li><h:commandLink action="#{inicioAjax.redirigirInicio()}"
+								value="Inicio" rendered="#{sessionControl.sesion}" /></li>
 						<li><h:commandLink
 								action="#{inicioAjax.redirigirAsociacionCuenta()}"
-								value="Asociar una cuenta" 
-								rendered="#{sessionControl.sesion}" /></li>
+								value="Asociar una cuenta" rendered="#{sessionControl.sesion}" /></li>
 						<li><h:commandLink
 								action="#{inicioAjax.redirigirAvanceCuenta()}"
 								value="Pago tarjeta cuenta avance"
@@ -65,92 +63,92 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 								value="Tranferir saldo a cuentas asociadas"
 								rendered="#{sessionControl.sesion}" /></li>
 						<li><h:commandLink action="#{sessionControl.cerrarSession()}"
-								value="Cerrar Sesion" 
-								rendered="#{sessionControl.sesion}" /></li>				
-				</ul>
+								value="Cerrar Sesion" rendered="#{sessionControl.sesion}" /></li>
+					</ul>
 				</h:form>
 			</nav>
 
 			<a class="menu-toggle" href="#"><span>Menu</span></a>
-   		
-   	</div>   	
-   	
-   </header> <!-- /header -->
+
+		</div>
+
+	</header>
+	<!-- /header -->
 
 	<!-- intro section
    ================================================== -->
-   <section id="intro">
+	<section id="intro">
 
-   	<div class="shadow-overlay"></div>
+		<div class="shadow-overlay"></div>
 
-   	<div class="intro-content">
-   		<div class="row">
+		<div class="intro-content">
+			<div class="row">
 
-   			<div class="col-twelve">
+				<div class="col-twelve">
 
-	   			<div class='video-link'>
-	   				<a href="#video-popup"><img src="images/play-button.png" alt=""></img></a>
-	   			</div>
-	   			<h5>Bienvenidos al banquito</h5>
-	   			<h1>Guarde su dinero aqui, que se lo cuidamos con amor</h1>
+					<div class='video-link'>
+						<a href="#video-popup"><img src="images/play-button.png"
+							alt=""></img></a>
+						<h1>Guarde su dinero aqui, que se lo cuidamos con amor</h1>
+						<a class="button stroke smoothscroll" href="#process" title="">Learn
+							More</a>
 
-	   			<a class="button stroke smoothscroll" href="#process" title="">Learn More</a>
+					</div>
 
-	   		</div>  
-   			
-   		</div>   		 		
-   	</div> 
+				</div>
+			</div>
+		</div>
 
-   	<!-- Modal Popup
+		<!-- Modal Popup
 	   ========================================================= -->
 
-      <div id="video-popup" class="popup-modal mfp-hide">
+		<div id="video-popup" class="popup-modal mfp-hide">
 
-		   <div class="fluid-video-wrapper">
-            <iframe src="http://player.vimeo.com/video/14592941?title=0&amp;byline=0&amp;portrait=0&amp;color=faec09" 
-            width="500" height="281" frameborder="0" ></iframe> 
-         </div>		     
+			<div class="fluid-video-wrapper">
+				<iframe
+					src="http://player.vimeo.com/video/14592941?title=0&amp;byline=0&amp;portrait=0&amp;color=faec09"
+					width="500" height="281" frameborder="0"></iframe>
+			</div>
 
-         <a class="close-popup">Close</a>         
+			<a class="close-popup">Close</a>
 
-	   </div> <!-- /video-popup -->  	 	
+		</div>
+		<!-- /video-popup -->
+	</section>
+	<!-- /intro -->
 
-   </section> <!-- /intro -->
 
-
-   <!-- Process Section
+	<!-- Process Section
    ================================================== -->
-   <section id="process">  
-   	<div class="row section-intro">
-   		<div class="col-twelve with-bottom-line">	
-   		
-						<ui:insert name="cuerpo" />
+	<section id="process">
+		<div class="row section-intro">
+			<div class="col-twelve with-bottom-line">
 
-   		</div>   		
-   	</div>
+				<ui:insert name="cuerpo" />
 
-   	<div class="row process-content">			
+			</div>
+		</div>
 
-   	</div> <!-- /process-content --> 
+		<div class="row process-content"></div>
+		<!-- /process-content -->
 
-   </section> <!-- /process-->    
+	</section>
+	<!-- /process-->
 
-   <!-- footer
+	<!-- footer
    ================================================== -->
-   <footer>
-   
-   </footer>  
+	<footer> </footer>
 
-   <div id="preloader"> 
-    	<div id="loader"></div>
-   </div> 
+	<div id="preloader">
+		<div id="loader"></div>
+	</div>
 
-   <!-- Java Script
-   ================================================== --> 
-   <script src="#{request.contextPath}/js/jquery-1.11.3.min.js"></script>
-   <script src="#{request.contextPath}/js/jquery-migrate-1.2.1.min.js"></script>
-   <script src="#{request.contextPath}/js/plugins.js"></script>
-   <script src="#{request.contextPath}/js/main.js"></script>
+	<!-- Java Script
+   ================================================== -->
+	<script src="#{request.contextPath}/js/jquery-1.11.3.min.js"></script>
+	<script src="#{request.contextPath}/js/jquery-migrate-1.2.1.min.js"></script>
+	<script src="#{request.contextPath}/js/plugins.js"></script>
+	<script src="#{request.contextPath}/js/main.js"></script>
 
 </h:body>
 

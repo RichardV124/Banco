@@ -102,8 +102,7 @@ public class CuentaAsociadaEJB {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void eliminar(int id){
-			CuentaAsociada ca = em.getReference(CuentaAsociada.class, id);
-			ca.getId();
+			CuentaAsociada ca = em.find(CuentaAsociada.class, id);
 			em.remove(ca);
 	}
 	
@@ -133,9 +132,11 @@ public class CuentaAsociadaEJB {
 		RespuestaServicio resp = servicio.registrarCuentaAsociada(ca.getIdbanco(), ca.getTipodoc(), ca.getNumerodoc(), ca.getNombre(), ca.getNumerocuenta());
 		
 		System.out.println(resp.getMensaje());
-		if(resp.getCodigo().equals("0003")){
+		if(resp.getMensaje().equalsIgnoreCase("NO_VALIDA")){
+			cuenta.setEstado(resp.getMensaje());
+			editar(cuenta);
+			System.out.println(cuenta.getId());
 			eliminar(cuenta.getId());
-			throw new ExcepcionNegocio("La cuenta asociada no es valida");
 		}else{
 			cuenta.setEstado(resp.getMensaje());
 			editar(cuenta);
