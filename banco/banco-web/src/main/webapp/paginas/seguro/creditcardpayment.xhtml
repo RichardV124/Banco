@@ -14,29 +14,16 @@
 			<p:panel id="paneldatos" header="Datos basicos">
 
 				<h:panelGrid columns="3">
-
-					<h:outputLabel id="lbltipodocumento"
-						value="#{msj['creditcardpayment.tipodocumento']}:" />
-					<h:selectOneMenu id="cbtipo" value="#{payAjax.tipodocumento}">
+					<h:outputLabel for="cbtarjeta" id="lbltarjeta"
+						value="Seleccione su Tarjeta de Credito:" />
+					<h:selectOneMenu id="cbtarjeta"
+						value="#{payAjax.tarjetaSeleccionada}">
 						<!-- x<f:selectItems value="#" itemLabel="#" itemValue="#" />-->
-						<f:selectItem itemValue="CEDULA" itemLabel="CEDULA" />
-						<f:selectItem itemValue="TARJETA DE IDENTIDAD"
-							itemLabel="TARJETA DE IDENTIDAD" />
-						<f:selectItem itemValue="REGISTRO CIVIL"
-							itemLabel="REGISTRO CIVIL" />
+						<f:selectItems value="#{payAjax.tarjetas}" var="tar"
+							itemValue="#{tar.number}" itemLabel="#{tar.number}" 
+							/>
 					</h:selectOneMenu>
-					<p:message for="cbtipo" />
-
-					<h:outputLabel id="lblnumerodocumento"
-						value="#{msj['creditcardpayment.numerodocumento']}:" />
-					<h:inputText id="tfnumerodocumento"
-						value="#{payAjax.numerodocumento}" />
-					<p:message for="tfnumerodocumento" />
-
-					<h:outputLabel id="lblnumerotarjeta"
-						value="#{msj['creditcardpayment.numerotarjeta']}:" />
-					<h:inputText id="tfnumerotarjeta" value="#{payAjax.numerotarjeta}" />
-					<p:message for="tfnumerotarjeta" />
+					<h:outputLabel id="lbltarjetaa" value="" />
 
 				</h:panelGrid>
 
@@ -45,7 +32,7 @@
 			<h:panelGrid id="panelbtns" columns="1">
 				<p:commandButton id="btnBuscar"
 					value="#{msj['creditcardpayment.buscar']}"
-					process="@this tfnumerodocumento tfnumerotarjeta cbtipo"
+					process="@this paneldatos"
 					update="paneltabla cbcuenta" action="#{payAjax.buscar}" />
 			</h:panelGrid>
 

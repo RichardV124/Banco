@@ -9,12 +9,14 @@ import javax.inject.Named;
 import javax.validation.constraints.NotNull;
 
 import org.omnifaces.cdi.ViewScoped;
+import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CreditCard;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CreditCardConsume;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Customer;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SavingAccount;
+import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Usuario;
 import co.edu.eam.ingesoft.pa.negocio.beans.CreditCardConsumeEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.CreditCardEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.CreditCardPaymentConsumeEJB;
@@ -25,24 +27,16 @@ import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
 @Named("payAjax")
 @ViewScoped
 public class CreditCardPaymentControllerAjax implements Serializable{
-
-	/**
-	 * Tipo de documento del customer
-	 */
-	@NotNull(message="Debe seleccionar el tipo de documento")
-	private String tipodocumento;
-	
-	/**
-	 * Numero de identificacion del customer
-	 */
-	@NotNull(message="Debe ingresar el numero de documento")
-	private String numerodocumento;
 	
 	/**
 	 * Numero de la tarjeta de credito
 	 */
-	@NotNull(message="Debe ingresar el numero de la tarjeta")
-	private String numerotarjeta;
+	private String tarjetaSeleccionada;
+	
+	/**
+	 * lista de la starjetas de credito
+	 */
+	private List<CreditCard> tarjetas;
 	
 	/**
 	 * valor excedente para el pago de la cuota
@@ -99,6 +93,18 @@ public class CreditCardPaymentControllerAjax implements Serializable{
 	@PostConstruct
 	public void inicializar(){
 		
+		try {
+			Usuario usuario = Faces.getSessionAttribute("user");
+			Customer c = usuario.getCustomer();
+			tarjetas = creditCardEJB.listarTarjetasCliente(c);
+		}catch(ExcepcionNegocio e1){
+			Messages.addFlashGlobalError(e1.getMessage());
+			e1.printStackTrace();
+		}catch (Exception e) {
+			// TODO Auto-generated catch block
+			Messages.addFlashGlobalInfo(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -106,9 +112,10 @@ public class CreditCardPaymentControllerAjax implements Serializable{
 	 */
 	public void buscar(){
 		try {
-			Customer c = customerEJB.buscarCustomer(tipodocumento, numerodocumento);
+			Usuario usuario = Faces.getSessionAttribute("user");
+			Customer c = usuario.getCustomer();
 			if(c!=null){
-				CreditCard cc = creditCardEJB.buscarCreditCard(numerotarjeta);
+				CreditCard cc = creditCardEJB.buscarCreditCard(tarjetaSeleccionada);
 				if(cc!=null){
 					setConsumos(creditCardConsume.listarConsumosTarjeta(cc));
 					cuentas = savingAccountEJB.listarCuentasCliente(c);
@@ -133,7 +140,7 @@ public class CreditCardPaymentControllerAjax implements Serializable{
 	public void pagarCuota(){
 		System.out.println("asdkasdlkdaslkd" +cuentaSeleccionada);
 			try {
-				creditCardPaymentEJB.crearCreditCardPaymentCuentaAhorros(numerotarjeta, excedente,"11882590920");
+				creditCardPaymentEJB.crearCreditCardPaymentCuentaAhorros(tarjetaSeleccionada, excedente,"11882590920");
 				Messages.addFlashGlobalInfo("Pago realizado con exito");
 			}catch(ExcepcionNegocio e1){
 				Messages.addFlashGlobalError(e1.getMessage());
@@ -161,28 +168,31 @@ public class CreditCardPaymentControllerAjax implements Serializable{
 		}
 	}
 
-	public String getTipodocumento() {
-		return tipodocumento;
+	
+	
+
+	public String getTarjetaSeleccionada() {
+		return tarjetaSeleccionada;
 	}
 
-	public void setTipodocumento(String tipodocumento) {
-		this.tipodocumento = tipodocumento;
+	public void setTarjetaSeleccionada(String tarjetaSeleccionada) {
+		this.tarjetaSeleccionada = tarjetaSeleccionada;
 	}
 
-	public String getNumerodocumento() {
-		return numerodocumento;
+	public List<CreditCard> getTarjetas() {
+		return tarjetas;
 	}
 
-	public void setNumerodocumento(String numerodocumento) {
-		this.numerodocumento = numerodocumento;
+	public void setTarjetas(List<CreditCard> tarjetas) {
+		this.tarjetas = tarjetas;
 	}
 
-	public String getNumerotarjeta() {
-		return numerotarjeta;
+	public SavingAccountEJB getSavingAccountEJB() {
+		return savingAccountEJB;
 	}
 
-	public void setNumerotarjeta(String numerotarjeta) {
-		this.numerotarjeta = numerotarjeta;
+	public void setSavingAccountEJB(SavingAccountEJB savingAccountEJB) {
+		this.savingAccountEJB = savingAccountEJB;
 	}
 
 	public List<CreditCardConsume> getConsumos() {
