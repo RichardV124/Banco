@@ -137,7 +137,6 @@ public class CuentaAsociadaEJB {
 			editar(cuenta);
 			System.out.println(cuenta.getId());
 			eliminar(cuenta.getId());
-			
 		}else{
 			cuenta.setEstado(resp.getMensaje());
 			editar(cuenta);
