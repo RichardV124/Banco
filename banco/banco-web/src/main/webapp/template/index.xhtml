@@ -48,9 +48,10 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 	   	<nav id="main-nav-wrap">
 	   	<h:form>
 				<ul class="main-navigation">
-					<li class="current"><a class="smoothscroll"  href="#intro" title="">Home</a></li>
-					<li><a class="smoothscroll"  href="#process" title="">Process</a></li>
-					<li><a class="smoothscroll"  href="#features" title="">Features</a></li>
+					<li><h:commandLink
+								action="#{inicioAjax.redirigirInicio()}"
+								value="Inicio" 
+								rendered="#{sessionControl.sesion}" /></li>
 						<li><h:commandLink
 								action="#{inicioAjax.redirigirAsociacionCuenta()}"
 								value="Asociar una cuenta" 
@@ -90,14 +91,8 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 	   			<div class='video-link'>
 	   				<a href="#video-popup"><img src="images/play-button.png" alt=""></img></a>
 	   			</div>
-
-<<<<<<< HEAD
-	   			<h5>Hello welcome to Our Bank.</h5>
-	   			<h1>Our awesome app will make your life a lot easier.</h1>
-=======
 	   			<h5>Bienvenidos al banquito</h5>
 	   			<h1>Guarde su dinero aqui, que se lo cuidamos con amor</h1>
->>>>>>> branch 'master' of https://github.com/RichardV124/Banco.git
 
 	   			<a class="button stroke smoothscroll" href="#process" title="">Learn More</a>
 
