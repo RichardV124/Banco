@@ -133,9 +133,13 @@ public class CuentaAsociadaEJB {
 		RespuestaServicio resp = servicio.registrarCuentaAsociada(ca.getIdbanco(), ca.getTipodoc(), ca.getNumerodoc(), ca.getNombre(), ca.getNumerocuenta());
 		
 		System.out.println(resp.getMensaje());
-		
-		cuenta.setEstado(resp.getMensaje());
-		editar(cuenta);
+		if(resp.getCodigo().equals("0003")){
+			eliminar(cuenta.getId());
+			throw new ExcepcionNegocio("La cuenta asociada no es valida");
+		}else{
+			cuenta.setEstado(resp.getMensaje());
+			editar(cuenta);
+		}
 	}
 	
 	/**
