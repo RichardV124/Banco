@@ -69,7 +69,7 @@ public class InicioControllerAjax implements Serializable {
 		return "/paginas/seguro/avancecuentaahorros.xhtml?faces-redirect=true";
 	}
 	
-	public String redirigirAsociarCuenta(){
+	public String redirigirAsociacionCuenta(){
 		return "/paginas/seguro/asociacioncuenta.xhtml?faces-redirect=true";
 	}
 	

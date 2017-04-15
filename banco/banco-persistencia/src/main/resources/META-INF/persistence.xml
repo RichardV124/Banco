@@ -5,7 +5,7 @@
 	<persistence-unit name = "primary">
 		<jta-data-source>java:jboss/datasources/BancoDS</jta-data-source>
 		<properties><!--Properties for Hibernate -->
-			<property name = "hibernate.hbm2ddl.auto" value="none" />
+			<property name = "hibernate.hbm2ddl.auto" value="update" />
 			<property name = "hibernate.show_sql" value="true" />
 		</properties>
 	</persistence-unit>

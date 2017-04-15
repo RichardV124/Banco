@@ -52,18 +52,20 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 					<li><a class="smoothscroll"  href="#process" title="">Process</a></li>
 					<li><a class="smoothscroll"  href="#features" title="">Features</a></li>
 						<li><h:commandLink
-								action="#{inicioAjax.redirigirAsociacionCuenta}"
-								value="Asociar una cuenta" rendered="#{sessionControl.sesion}" /></li>
+								action="#{inicioAjax.redirigirAsociacionCuenta()}"
+								value="Asociar una cuenta" 
+								rendered="#{sessionControl.sesion}" /></li>
 						<li><h:commandLink
-								action="#{inicioAjax.redirigirAvanceCuenta}"
+								action="#{inicioAjax.redirigirAvanceCuenta()}"
 								value="Pago tarjeta cuenta avance"
 								rendered="#{sessionControl.sesion}" /></li>
 						<li><h:commandLink
-								action="#{inicioAjax.redirigirTransferirCuentaAsociada}"
+								action="#{inicioAjax.redirigirTransferirCuentaAsociada()}"
 								value="Tranferir saldo a cuentas asociadas"
 								rendered="#{sessionControl.sesion}" /></li>
 						<li><h:commandLink action="#{sessionControl.cerrarSession()}"
-								value="Cerrar Sesion" rendered="#{sessionControl.sesion}" /></li>				
+								value="Cerrar Sesion" 
+								rendered="#{sessionControl.sesion}" /></li>				
 				</ul>
 				</h:form>
 			</nav>
@@ -89,7 +91,7 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 	   				<a href="#video-popup"><img src="images/play-button.png" alt=""></img></a>
 	   			</div>
 
-	   			<h5>Hello welcome to lhander.</h5>
+	   			<h5>Hello welcome to Our Bank.</h5>
 	   			<h1>Our awesome app will make your life a lot easier.</h1>
 
 	   			<a class="button stroke smoothscroll" href="#process" title="">Learn More</a>
