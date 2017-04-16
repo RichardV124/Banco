@@ -31,11 +31,11 @@ public class SegundaClave implements Serializable{
 	private Customer customer;
 	
 	@Column(name="fecha_generacion")
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIME)
 	private Date fechaGeneracion;
 	
 	@Column(name="fecha_vencimiento")
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIME)
 	private Date fechaVencimiento;
 
 	public SegundaClave() {

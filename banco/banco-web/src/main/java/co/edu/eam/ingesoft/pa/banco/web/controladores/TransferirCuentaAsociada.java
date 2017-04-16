@@ -116,15 +116,16 @@ public class TransferirCuentaAsociada implements Serializable {
 		sc.setClave(claveGenerada);
 		segundaClaveEJB.crear(sc);
 		segundaClaveEJB.enviarEmail(claveGenerada, usuario.getCustomer().getEmail());
-		segundaClaveEJB.enviarSms(claveGenerada, usuario.getCustomer().getNumberPhone());
+		System.out.println("Se ha enviado al correo: "+usuario.getCustomer().getEmail());
+		//segundaClaveEJB.enviarSms(claveGenerada, usuario.getCustomer().getNumberPhone());
 	}
 
 	public void verificar() {
 		if(claveGenerada==null){
 			Messages.addFlashGlobalInfo("Debe generar la clave de confirmacion primero");
 		}
-		SegundaClave sc = segundaClaveEJB.buscar(claveGenerada);
-		if(sc.getFechaGeneracion().after(sc.getFechaVencimiento())){
+		SegundaClave sc = segundaClaveEJB.buscar(codigoverificacion);
+		if(sc.getFechaGeneracion().before(sc.getFechaVencimiento())){
 		//if(sc.getFechaGeneracion().compareTo(sc.getFechaVencimiento())>0){
 			verificada = true;
 			Messages.addFlashGlobalInfo("Clave verificada");
@@ -136,8 +137,13 @@ public class TransferirCuentaAsociada implements Serializable {
 	
 	public void transferir() {
 		try {
-			savingAccountEJB.tranferenciaInterbancaria(asociadaSeleccionada, cuentaSeleccionada, monto);
+			if(verificada){
+				savingAccountEJB.tranferenciaInterbancaria(asociadaSeleccionada, cuentaSeleccionada, monto);
 			Messages.addFlashGlobalInfo("Se hizo el avance correctamente");
+			}else{
+				Messages.addFlashGlobalInfo("Debe confirmar el codigo de seguridad");
+			}
+			
 		} catch (ExcepcionNegocio e1) {
 			Messages.addFlashGlobalError(e1.getMessage());
 			e1.printStackTrace();

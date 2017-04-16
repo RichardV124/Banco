@@ -70,10 +70,12 @@
 				<p:commandButton id="btnCancelar"
 					value="#{msj['avancecuentaahorros.cancelar']}" ajax="false"
 					action="#{controladorTransferirAjax.cancelar()}" />
-
-				<p:commandButton id="btnGenerarClave"
-					value="#{msj['transferircuentaasociada.generar']}" ajax="false"
+					
+					<p:commandButton id="btnGenerarClave"
+					value="#{msj['transferircuentaasociada.generar']}"
+					process="@this" update="paneldatos" 
 					action="#{controladorTransferirAjax.generarClave}" />
+					
 			</h:panelGrid>
 
 		</h:form>

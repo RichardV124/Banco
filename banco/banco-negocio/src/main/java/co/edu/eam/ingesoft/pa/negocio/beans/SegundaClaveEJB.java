@@ -59,7 +59,12 @@ public class SegundaClaveEJB {
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public SegundaClave buscar(String clave){
-		return em.find(SegundaClave.class, clave);
+		
+		SegundaClave sc = em.find(SegundaClave.class, clave);
+		if(sc==null){
+			throw new ExcepcionNegocio("La clave ingresada no coincide con la generada");
+		}
+		return sc;
 	}
 	
 	/**
@@ -82,6 +87,7 @@ public class SegundaClaveEJB {
 	private Date fechaGeneracion(){
 		Calendar calendar = Calendar.getInstance();
 		Date fechaGeneracion = calendar.getTime();
+		System.out.println(fechaGeneracion);
 		return fechaGeneracion;
 	}
 	
@@ -93,7 +99,8 @@ public class SegundaClaveEJB {
 	private Date fechaVencimiento(){
 		Calendar calendar = Calendar.getInstance();
 		Date fechaVencimiento = calendar.getTime();
-		fechaVencimiento.setMinutes(fechaVencimiento.getMinutes() + 2);
+		fechaVencimiento.setMinutes(fechaVencimiento.getMinutes() + 5);
+		System.out.println(fechaVencimiento);
 		return fechaVencimiento;
 	}
 	
@@ -108,7 +115,7 @@ public class SegundaClaveEJB {
 
 		Sms msj = new Sms();
 		// Mensaje
-		msj.setTexto("Su codigo de verificacion es:" + claveGenerada + "\n \nSu codigo expirara en 90 minutos");
+		msj.setTexto("Su codigo de verificacion es: " + claveGenerada + "\n \nSu codigo expirara en 90 minutos");
 		// A quien se le envia
 		msj.setTo(numeroTelefono);
 		
@@ -127,7 +134,7 @@ public class SegundaClaveEJB {
 
 		Mail correo = new Mail();
 		// Mensaje
-		correo.setBody("Su codigo de verificacion es:" + claveGenerada + "\n \nSu codigo expirara en 90 minutos");
+		correo.setBody("Su codigo de verificacion es: " + claveGenerada + "\n \nSu codigo expirara en 90 minutos");
 		//
 		correo.setFrom("idontknow@eam.edu.co");
 		// A quien se le envia
