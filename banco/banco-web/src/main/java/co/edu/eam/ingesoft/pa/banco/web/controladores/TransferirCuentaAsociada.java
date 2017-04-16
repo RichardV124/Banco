@@ -98,6 +98,7 @@ public class TransferirCuentaAsociada implements Serializable {
 			usuario = Faces.getSessionAttribute("user");
 			cuentas = savingAccountEJB.listarCuentasCliente(usuario.getCustomer());
 			asociadas = asociadaCuentaEJB.listarCuentas(usuario.getCustomer());
+			claveGenerada = null;
 			verificada = false;
 		} catch (ExcepcionNegocio e1) {
 			Messages.addFlashGlobalError(e1.getMessage());
@@ -115,12 +116,15 @@ public class TransferirCuentaAsociada implements Serializable {
 		sc.setClave(claveGenerada);
 		segundaClaveEJB.crear(sc);
 		segundaClaveEJB.enviarEmail(claveGenerada, usuario.getCustomer().getEmail());
-//		segundaClaveEJB.enviarSms(claveGenerada, usuario.getCustomer().getNumberPhone());
+		segundaClaveEJB.enviarSms(claveGenerada, usuario.getCustomer().getNumberPhone());
 	}
 
 	public void verificar() {
+		if(claveGenerada==null){
+			Messages.addFlashGlobalInfo("Debe generar la clave de confirmacion primero");
+		}
 		SegundaClave sc = segundaClaveEJB.buscar(claveGenerada);
-		if(sc.getFechaGeneracion().before(sc.getFechaVencimiento())){
+		if(sc.getFechaGeneracion().after(sc.getFechaVencimiento())){
 		//if(sc.getFechaGeneracion().compareTo(sc.getFechaVencimiento())>0){
 			verificada = true;
 			Messages.addFlashGlobalInfo("Clave verificada");
