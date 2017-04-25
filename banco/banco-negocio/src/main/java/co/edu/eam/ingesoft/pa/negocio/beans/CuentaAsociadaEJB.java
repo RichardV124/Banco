@@ -21,6 +21,7 @@ import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.InterbancarioWS_
 import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.RegistrarCuentaAsociada;
 import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.RespuestaServicio;
 import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.TipoDocumentoEnum;
+import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.TransferirMonto;
 import co.edu.eam.pa.clientews.Notificaciones;
 import co.edu.eam.pa.clientews.NotificacionesService;
 import co.edu.eam.pa.clientews.RespuestaNotificacion;
@@ -30,45 +31,52 @@ import co.edu.eam.pa.clientews.Sms;
 @Stateless
 @Remote(ICuentaAsociadaRemote.class)
 public class CuentaAsociadaEJB {
-	
+
 	@PersistenceContext
 	private EntityManager em;
-	
+
 	/**
 	 * metodo para asociar una cuenta bancaria
-	 * @param cuenta, cuenta a asociar
+	 * 
+	 * @param cuenta,
+	 *            cuenta a asociar
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void crear(CuentaAsociada cuenta){
+	public void crear(CuentaAsociada cuenta) {
 		CuentaAsociada ca = buscar(cuenta.getId());
-		if(ca!=null){
+		if (ca != null) {
 			throw new ExcepcionNegocio("La cuenta ya está asociada");
-		}else{
+		} else {
 			em.persist(cuenta);
 		}
 	}
-	
+
 	/**
 	 * metodo para buscar una cuenta asociada
-	 * @param id identificador de la cuenta asociada
-	 * @return null si la cuenta no está registrada, de lo contrario retorna la cuenta asociada
+	 * 
+	 * @param id
+	 *            identificador de la cuenta asociada
+	 * @return null si la cuenta no está registrada, de lo contrario retorna la
+	 *         cuenta asociada
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public CuentaAsociada buscar(int id){
+	public CuentaAsociada buscar(int id) {
 		CuentaAsociada ca = em.find(CuentaAsociada.class, id);
-		if(ca!=null){
+		if (ca != null) {
 			return ca;
 		}
 		return null;
 	}
-	
+
 	/**
 	 * metodo para listar las cuentas asociadas de un cliente
-	 * @param cus, cliente al que se le listaran las cuentas asociadas
+	 * 
+	 * @param cus,
+	 *            cliente al que se le listaran las cuentas asociadas
 	 * @return la lista con las cuentas que el cliente tiene asociadas
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public List<CuentaAsociada> listarCuentas(Customer cus){
+	public List<CuentaAsociada> listarCuentas(Customer cus) {
 		Query query = em.createNamedQuery(CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS);
 		query.setParameter(1, cus);
 		List<CuentaAsociada> cuentas = query.getResultList();
@@ -78,14 +86,16 @@ public class CuentaAsociadaEJB {
 			return cuentas;
 		}
 	}
-	
+
 	/**
 	 * metodo para listar las cuentas asociadas de un cliente
-	 * @param cus, cliente al que se le listaran las cuentas asociadas
+	 * 
+	 * @param cus,
+	 *            cliente al que se le listaran las cuentas asociadas
 	 * @return la lista con las cuentas que el cliente tiene asociadas
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public List<CuentaAsociada> listarCuentasAsociadasValidadas(Customer cus){
+	public List<CuentaAsociada> listarCuentasAsociadasValidadas(Customer cus) {
 		Query query = em.createNamedQuery(CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS_VALIDADAS);
 		query.setParameter(1, cus);
 		List<CuentaAsociada> cuentas = query.getResultList();
@@ -95,19 +105,21 @@ public class CuentaAsociadaEJB {
 			return cuentas;
 		}
 	}
-	
+
 	/**
 	 * metodo para eliminar una cuenta asociada
-	 * @param ca, cuenta asociada a eliminar
+	 * 
+	 * @param ca,
+	 *            cuenta asociada a eliminar
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void eliminar(int id){
-			CuentaAsociada ca = em.find(CuentaAsociada.class, id);
-			em.remove(ca);
+	public void eliminar(int id) {
+		CuentaAsociada ca = em.find(CuentaAsociada.class, id);
+		em.remove(ca);
 	}
-	
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void verificarCuenta(CuentaAsociada cuenta){
+	public void verificarCuenta(CuentaAsociada cuenta) {
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
@@ -122,41 +134,63 @@ public class CuentaAsociadaEJB {
 		TipoDocumentoEnum tipoDoc = null;
 		tipoDoc = tipoDoc.fromValue(cuenta.getOwnerTypeId());
 		ca.setTipodoc(tipoDoc);
-		//numero documento
+		// numero documento
 		ca.setNumerodoc(cuenta.getOwnerNumId());
-		//nombre
+		// nombre
 		ca.setNombre(cuenta.getName());
-		//numero cuenta
+		// numero cuenta
 		ca.setNumerocuenta(cuenta.getNumber());
-		
-		RespuestaServicio resp = servicio.registrarCuentaAsociada(ca.getIdbanco(), ca.getTipodoc(), ca.getNumerodoc(), ca.getNombre(), ca.getNumerocuenta());
-		
+
+		RespuestaServicio resp = servicio.registrarCuentaAsociada(ca.getIdbanco(), ca.getTipodoc(), ca.getNumerodoc(),
+				ca.getNombre(), ca.getNumerocuenta());
+
 		System.out.println(resp.getMensaje());
-		if(resp.getMensaje().equalsIgnoreCase("NO_VALIDA")){
+		if (resp.getMensaje().equalsIgnoreCase("NO_VALIDA")) {
 			cuenta.setEstado(resp.getMensaje());
 			editar(cuenta);
 			System.out.println(cuenta.getId());
 			eliminar(cuenta.getId());
-		}else{
+		} else {
 			cuenta.setEstado(resp.getMensaje());
 			editar(cuenta);
 		}
 	}
-	
+
 	/**
 	 * MEtodo para editar una cuenta asociada...
+	 * 
 	 * @param ca
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void editar(CuentaAsociada ca){
-		CuentaAsociada busc=buscar(ca.getId());
-		//no existe,no se puede editar...
-		if(busc!=null){
+	public void editar(CuentaAsociada ca) {
+		CuentaAsociada busc = buscar(ca.getId());
+		// no existe,no se puede editar...
+		if (busc != null) {
 			em.merge(ca);
-		}else{
+		} else {
 			throw new ExcepcionNegocio("No existe la cuenta a editar");
 		}
-		
+
+	}
+
+	public void transferenciaInterbancariaWS(String idBanco, String numeroCuenta, double monto) {
+		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
+		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
+
+		String endpointURL = "http://104.197.238.134:8080/interbancario/InterbancarioWS";
+		BindingProvider bp = (BindingProvider) servicio;
+		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
+
+		TransferirMonto tm = new TransferirMonto();
+		// Id banco
+		tm.setIdbanco(idBanco);
+		// numero documento
+		tm.setMonto(monto);
+		tm.setNumerocuenta(numeroCuenta);
+
+		RespuestaServicio resp = servicio.transferirMonto(idBanco, numeroCuenta, monto);
+
+		System.out.println(resp.getMensaje());
 	}
 
 }

@@ -183,7 +183,11 @@ public class SavingAccountEJB {
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public SavingAccount buscarSavingAccount(String num) {
-		return em.find(SavingAccount.class, num);
+		SavingAccount cuenta = em.find(SavingAccount.class, num);
+		if (cuenta != null) {
+			return cuenta;
+		}
+		return null;
 	}
 
 	/**
@@ -318,7 +322,7 @@ public class SavingAccountEJB {
 	}
 
 	/**
-	 * Metodo para verificar si la cuenta esta asociada 
+	 * Metodo para verificar si la cuenta esta asociada
 	 * 
 	 * @param numero
 	 *            de la cuenta de ahorros
@@ -328,14 +332,14 @@ public class SavingAccountEJB {
 	public boolean verficarCuenta(String cuenta, String cedula, String tipoId) {
 
 		SavingAccount sav = em.find(SavingAccount.class, cuenta);
-		if(sav!=null){
-		if(sav.getCustomer().getIdType().equals(tipoId)&&sav.getCustomer().getIdNum().equals(cedula)){
-			return true;
-		}
-		}else{
+		if (sav != null) {
+			if (sav.getCustomer().getIdType().equals(tipoId) && sav.getCustomer().getIdNum().equals(cedula)) {
+				return true;
+			}
+		} else {
 			throw new ExcepcionNegocio("La cuenta no existe en este banco");
 		}
 		return false;
-		
+
 	}
 }
