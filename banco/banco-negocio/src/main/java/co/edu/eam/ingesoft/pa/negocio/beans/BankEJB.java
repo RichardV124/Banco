@@ -43,22 +43,24 @@ public class BankEJB {
 		}	
 	}
 	
-//	/**
-//	 * metodo para listar los bancos registrados
-//	 */
-//	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-//	public List<Banco> listarBancos(){
-//		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
-//		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
-//		
-//		String endpointURL = "http://104.197.238.134:8080/interbancario/InterbancarioWS?wsdl";
-//		BindingProvider bp = (BindingProvider) servicio;
-//		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
-//		
-//		List<Banco> bancos = servicio.listarBancos();
-////	    RespuestaServicio resp = (RespuestaServicio) servicio.listarBancos();
-//		return bancos;
-//	}
+	/**
+	 * metodo para listar los bancos registrados
+	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public List<Banco> listarBancosWS(){
+		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
+		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
+		
+		String endpointURL = "http://104.197.238.134:8080/interbancario/InterbancarioWS?wsdl";
+		BindingProvider bp = (BindingProvider) servicio;
+		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
+		
+		List<Banco> bancos = servicio.listarBancos();
+    RespuestaServicio resp = (RespuestaServicio) servicio.listarBancos();
+    System.out.println(resp);
+		
+		return bancos;
+	}
 	/**
 	 * Metodo para buscar un banco
 	 * @param id, identificador del banco

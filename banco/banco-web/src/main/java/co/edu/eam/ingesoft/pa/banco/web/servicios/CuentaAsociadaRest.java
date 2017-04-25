@@ -104,14 +104,9 @@ public class CuentaAsociadaRest {
 		
 		SavingAccount cuenta = savAccountEJB.buscarSavingAccount(numeroCuenta);
 		if (cuenta != null) {
-			boolean verificado = verificar(cuenta.getNumber(), cuenta.getCustomer().getIdNum(),
-					cuenta.getCustomer().getIdType());
-
-			if (verificado) {
 				cuentaAsociadaEJB.transferenciaInterbancariaWS("3", numeroCuenta, cantidad);
 				return "OK";
 			}
-		}
-		return "ERRORSITO";
+		return "ERROR";
 	}
 }
