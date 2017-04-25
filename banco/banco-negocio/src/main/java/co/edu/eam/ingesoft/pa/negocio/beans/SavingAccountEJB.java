@@ -316,4 +316,26 @@ public class SavingAccountEJB {
 		// Crear Transaccion
 		crearTransaction(cuenta, monto);
 	}
+
+	/**
+	 * Metodo para verificar si la cuenta esta asociada 
+	 * 
+	 * @param numero
+	 *            de la cuenta de ahorros
+	 * @return la cuenta de ahorros.
+	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public boolean verficarCuenta(String cuenta, String cedula, String tipoId) {
+
+		SavingAccount sav = em.find(SavingAccount.class, cuenta);
+		if(sav!=null){
+		if(sav.getCustomer().getIdType().equals(tipoId)&&sav.getCustomer().getIdNum().equals(cedula)){
+			return true;
+		}
+		}else{
+			throw new ExcepcionNegocio("La cuenta no existe en este banco");
+		}
+		return false;
+		
+	}
 }

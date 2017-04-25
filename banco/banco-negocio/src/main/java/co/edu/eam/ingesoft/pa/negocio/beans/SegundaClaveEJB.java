@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.xml.ws.BindingProvider;
 
+import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Customer;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SegundaClave;
 import co.edu.eam.ingesoft.pa.negocio.beans.remote.ISegundaClaveRemote;
 import co.edu.eam.ingesoft.pa.negocio.excepciones.ExcepcionNegocio;
@@ -36,13 +37,14 @@ public class SegundaClaveEJB {
 	 * @param sc segunda clave
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void crear(SegundaClave sc){
+	public void crear(SegundaClave sc,Customer c){
 		//String clave = generarClave();
 		sc.setClave(sc.getClave());
 		Date fechaGeneracion = fechaGeneracion();
 		sc.setFechaGeneracion(fechaGeneracion);
 		Date fechaVencimiento = fechaVencimiento();
 		sc.setFechaVencimiento(fechaVencimiento);
+		sc.setCustomer(c);
 		
 		SegundaClave s = buscar(sc.getClave());
 		if(s==null){

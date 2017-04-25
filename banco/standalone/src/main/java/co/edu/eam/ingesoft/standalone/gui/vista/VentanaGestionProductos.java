@@ -31,17 +31,20 @@ public class VentanaGestionProductos extends javax.swing.JFrame {
 	 * Creates new form VentanaGestionCreditCard
 	 */
 	public VentanaGestionProductos() {
+		
+		initComponents();
 		try {
 			controlador = new ControladorVentanaGestionProductos();
 			controladorCus = new ControladorVentanaGestionCustomer();
+			cargarComboTipoDocumento();
+			cargarComboFranquicia();
 
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		initComponents();
-		cargarComboTipoDocumento();
-		cargarComboFranquicia();
+		
+		
 	}
 
 	/**

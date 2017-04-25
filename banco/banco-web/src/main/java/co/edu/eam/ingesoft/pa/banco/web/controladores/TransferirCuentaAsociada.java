@@ -114,7 +114,7 @@ public class TransferirCuentaAsociada implements Serializable {
 		claveGenerada = segundaClaveEJB.generarClave();
 		SegundaClave sc = new SegundaClave();
 		sc.setClave(claveGenerada);
-		segundaClaveEJB.crear(sc);
+		segundaClaveEJB.crear(sc,usuario.getCustomer());
 		segundaClaveEJB.enviarEmail(claveGenerada, usuario.getCustomer().getEmail());
 		System.out.println("Se ha enviado al correo: "+usuario.getCustomer().getEmail());
 		//segundaClaveEJB.enviarSms(claveGenerada, usuario.getCustomer().getNumberPhone());
@@ -123,7 +123,7 @@ public class TransferirCuentaAsociada implements Serializable {
 	public void verificar() {
 		if(claveGenerada==null){
 			Messages.addFlashGlobalInfo("Debe generar la clave de confirmacion primero");
-		}
+		}else{
 		SegundaClave sc = segundaClaveEJB.buscar(codigoverificacion);
 		if(sc.getFechaGeneracion().before(sc.getFechaVencimiento())){
 		//if(sc.getFechaGeneracion().compareTo(sc.getFechaVencimiento())>0){
@@ -132,6 +132,7 @@ public class TransferirCuentaAsociada implements Serializable {
 		}else{
 			Messages.addFlashGlobalInfo("Esta clave se ha vencido, porfavor genere otra clave "
 					+ "para completar su transaccion");
+		}
 		}
 	}
 	
