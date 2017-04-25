@@ -89,7 +89,7 @@ public class CuentaAsociadaControllerAjax implements Serializable {
 	@PostConstruct
 	public void inicializar() {
 		try {
-			bancos = bankEJB.listarBancos();
+			bancos = bankEJB.listarBancosWS();
 			actualizarListadoCuentas();
 		} catch (ExcepcionNegocio e1) {
 			Messages.addFlashGlobalError(e1.getMessage());
