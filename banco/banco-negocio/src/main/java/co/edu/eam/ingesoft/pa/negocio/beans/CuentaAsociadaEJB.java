@@ -123,7 +123,7 @@ public class CuentaAsociadaEJB {
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
-		String endpointURL = "http://104.197.238.134:8080/interbancario/InterbancarioWS";
+		String endpointURL = "http://104.155.128.249:8080/interbancario/InterbancarioWS/InterbancarioWS";
 		BindingProvider bp = (BindingProvider) servicio;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 
@@ -173,7 +173,7 @@ public class CuentaAsociadaEJB {
 
 	}
 
-	public void transferenciaInterbancariaWS(String idBanco, String numeroCuenta, double monto) {
+	public boolean transferenciaInterbancariaWS(String idBanco, String numeroCuenta, double monto) {
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
@@ -189,8 +189,10 @@ public class CuentaAsociadaEJB {
 		tm.setNumerocuenta(numeroCuenta);
 
 		RespuestaServicio resp = servicio.transferirMonto(idBanco, numeroCuenta, monto);
-
-		System.out.println(resp.getMensaje());
+		if (resp.getCodigo().equals("000")) {
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -3,6 +3,7 @@ package co.edu.eam.ingesoft.pa.negocio.beans;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -11,6 +12,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.UserTransaction;
 import javax.xml.ws.BindingProvider;
 
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Bank;
@@ -31,6 +33,9 @@ public class BankEJB {
 	@PersistenceContext
 	private EntityManager em;
 
+//	@Resource
+//	private UserTransaction userTransaction;
+
 	/**
 	 * metodo para listar los bancos registrados
 	 */
@@ -49,25 +54,31 @@ public class BankEJB {
 	 * metodo para listar los bancos registrados
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public List<Bank> listarBancosWS() {
+	public List<Bank> listarBancosWS(){
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
-		String endpointURL = "http://104.197.238.134:8080/interbancario/InterbancarioWS?wsdl";
+		String endpointURL = "http://104.155.128.249:8080/interbancario/InterbancarioWS/InterbancarioWS";
 		BindingProvider bp = (BindingProvider) servicio;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 
 		ArrayList<Banco> resp = (ArrayList<Banco>) servicio.listarBancos();
-		
-		List<Bank> banquitos = new ArrayList<>();
-		
+
+		List<Bank> banquitos = new ArrayList<Bank>();
+
 		for (Banco banco : resp) {
-			
+
 			Bank b = new Bank(banco.getCodigo(), banco.getNombre());
 			banquitos.add(b);
-			
+//			Bank buscado = em.find(Bank.class, b.getId());
+//
+//			if (buscado == null) {
+//
+//				userTransaction.begin();
+//			    em.persist(b);
+//			    userTransaction.commit();
+//			}
 		}
-		
 
 		return banquitos;
 	}

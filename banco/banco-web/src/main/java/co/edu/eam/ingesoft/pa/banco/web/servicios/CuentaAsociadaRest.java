@@ -59,13 +59,17 @@ public class CuentaAsociadaRest {
 
 	}
 
+	@Path("/listarBancos")
+	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	public List<Bank> listarBancos() {
 
-		return bankEJB.listarBancos();
+		return bankEJB.listarBancosWS();
 	}
 
-	@POST
+	@Path("/listarCuentasAsociadas")
+	@Produces(MediaType.APPLICATION_JSON)
+	@GET
 	public List<CuentaAsociada> listarCuentas(Customer cus) {
 
 		return cuentaAsociadaEJB.listarCuentas(cus);
@@ -98,15 +102,12 @@ public class CuentaAsociadaRest {
 	@POST
 	public String transferir(@FormParam("cuenta") String numeroCuenta, @FormParam("cantidad") double cantidad) {
 
-		System.out.println(numeroCuenta);
-		System.out.println(cantidad);
-		System.out.println("asdasd"+cantidad);
-		
-		SavingAccount cuenta = savAccountEJB.buscarSavingAccount(numeroCuenta);
-		if (cuenta != null) {
-				cuentaAsociadaEJB.transferenciaInterbancariaWS("3", numeroCuenta, cantidad);
-				return "OK";
-			}
+		// SavingAccount cuenta =savAccountEJB.buscarSavingAccount(numeroCuenta);
+		// if (cuenta != null) {
+		boolean verificada = cuentaAsociadaEJB.transferenciaInterbancariaWS("3", numeroCuenta, cantidad);
+		if (verificada) {
+			return "OK";
+		}
 		return "ERROR";
 	}
 }
