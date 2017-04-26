@@ -33,9 +33,6 @@ public class BankEJB {
 	@PersistenceContext
 	private EntityManager em;
 
-//	@Resource
-//	private UserTransaction userTransaction;
-
 	/**
 	 * metodo para listar los bancos registrados
 	 */
@@ -53,14 +50,16 @@ public class BankEJB {
 	/**
 	 * metodo para listar los bancos registrados
 	 */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public List<Bank> listarBancosWS(){
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public List<Bank> listarBancosWS() {
+
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
-		String endpointURL = "http://104.155.128.249:8080/interbancario/InterbancarioWS/InterbancarioWS";
+		String endpoint = "http://104.155.128.249:8080/interbancario/InterbancarioWS/InterbancarioWS";
+
 		BindingProvider bp = (BindingProvider) servicio;
-		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
+		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpoint);
 
 		ArrayList<Banco> resp = (ArrayList<Banco>) servicio.listarBancos();
 
@@ -70,17 +69,21 @@ public class BankEJB {
 
 			Bank b = new Bank(banco.getCodigo(), banco.getNombre());
 			banquitos.add(b);
-//			Bank buscado = em.find(Bank.class, b.getId());
-//
-//			if (buscado == null) {
-//
-//				userTransaction.begin();
-//			    em.persist(b);
-//			    userTransaction.commit();
-//			}
-		}
+			Bank buscado = em.find(Bank.class, b.getId());
 
+			if (buscado == null) {
+
+				crearBanco(b);
+
+			}
+
+		}
 		return banquitos;
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void crearBanco(Bank b) {
+		em.persist(b);
 	}
 
 	/**

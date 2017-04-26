@@ -9,6 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.omnifaces.util.Messages;
@@ -20,6 +21,7 @@ import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SavingAccount;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SegundaClave;
 import co.edu.eam.ingesoft.pa.negocio.beans.BankEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.CuentaAsociadaEJB;
+import co.edu.eam.ingesoft.pa.negocio.beans.CustomerEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.SavingAccountEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.SegundaClaveEJB;
 
@@ -42,6 +44,13 @@ public class CuentaAsociadaRest {
 	 */
 	@EJB
 	private SegundaClaveEJB segundaClaveEJB;
+	
+
+	/**
+	 * EJB de la segunda clave
+	 */
+	@EJB
+	private CustomerEJB customerEJB;
 
 	/**
 	 * EJB del banco
@@ -70,9 +79,10 @@ public class CuentaAsociadaRest {
 	@Path("/listarCuentasAsociadas")
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
-	public List<CuentaAsociada> listarCuentas(Customer cus) {
+	public List<CuentaAsociada> listarCuentas(@QueryParam("id") String cedula,@QueryParam("tipoId") String tipoId) {
+		Customer c = customerEJB.buscarCustomer(tipoId, cedula);
 
-		return cuentaAsociadaEJB.listarCuentas(cus);
+		return cuentaAsociadaEJB.listarCuentas(c);
 	}
 
 	public boolean asociarCuenta(CuentaAsociada cuenta) {
@@ -106,7 +116,7 @@ public class CuentaAsociadaRest {
 		// if (cuenta != null) {
 		boolean verificada = cuentaAsociadaEJB.transferenciaInterbancariaWS("3", numeroCuenta, cantidad);
 		if (verificada) {
-			return "OK";
+			return "EXITO";
 		}
 		return "ERROR";
 	}
