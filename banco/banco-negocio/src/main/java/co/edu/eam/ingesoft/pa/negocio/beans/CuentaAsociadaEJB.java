@@ -2,6 +2,7 @@ package co.edu.eam.ingesoft.pa.negocio.beans;
 
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -34,6 +35,9 @@ public class CuentaAsociadaEJB {
 
 	@PersistenceContext
 	private EntityManager em;
+	
+	@EJB
+	private SavingAccountEJB savAccountEJB;
 
 	/**
 	 * metodo para asociar una cuenta bancaria
@@ -77,12 +81,13 @@ public class CuentaAsociadaEJB {
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<CuentaAsociada> listarCuentas(Customer cus) {
-		Query query = em.createNamedQuery(CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS);
+		Query query = em.createNamedQuery(CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS_VALIDADAS);
 		query.setParameter(1, cus);
 		List<CuentaAsociada> cuentas = query.getResultList();
 		if (cuentas.isEmpty()) {
 			throw new ExcepcionNegocio("Este cliente no tiene ninguna cuenta asociada");
 		} else {
+			
 			return cuentas;
 		}
 	}
@@ -123,7 +128,7 @@ public class CuentaAsociadaEJB {
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
-		String endpointURL = "http://104.155.128.249:8080/interbancario/InterbancarioWS";
+		String endpointURL = "http://104.155.128.249:8080/interbancario/InterbancarioWS/InterbancarioWS";
 		BindingProvider bp = (BindingProvider) servicio;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 
@@ -155,6 +160,8 @@ public class CuentaAsociadaEJB {
 			editar(cuenta);
 		}
 	}
+	
+	
 
 	/**
 	 * MEtodo para editar una cuenta asociada...
@@ -173,7 +180,7 @@ public class CuentaAsociadaEJB {
 
 	}
 
-	public boolean transferenciaInterbancariaWS(String idBanco, String numeroCuenta, double monto) {
+	public String transferenciaInterbancariaWS(String idBanco, String numeroCuenta, double monto) {
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
@@ -181,18 +188,13 @@ public class CuentaAsociadaEJB {
 		BindingProvider bp = (BindingProvider) servicio;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 
-		TransferirMonto tm = new TransferirMonto();
-		// Id banco
-		tm.setIdbanco(idBanco);
-		// numero documento
-		tm.setMonto(monto);
-		tm.setNumerocuenta(numeroCuenta);
-
 		RespuestaServicio resp = servicio.transferirMonto(idBanco, numeroCuenta, monto);
-		if (resp.getCodigo().equals("000")) {
-			return true;
+		if (resp.getCodigo().equals("0000")) {
+			
+			savAccountEJB.crearTransactionWeb(numeroCuenta, monto);
+			return resp.getMensaje();
 		}
-		return false;
+		return resp.getMensaje();
 	}
-
 }
+

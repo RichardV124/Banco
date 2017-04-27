@@ -82,8 +82,26 @@ public class CuentaAsociadaRest {
 	public List<CuentaAsociada> listarCuentas(@QueryParam("id") String cedula,@QueryParam("tipoId") String tipoId) {
 		Customer c = customerEJB.buscarCustomer(tipoId, cedula);
 
-		return cuentaAsociadaEJB.listarCuentas(c);
+		List<CuentaAsociada>accs= cuentaAsociadaEJB.listarCuentas(c);
+		for (CuentaAsociada cuentaAsociada : accs) {
+			cuentaAsociada.getCustomer().setProductos(null);
+		}
+		return accs;
 	}
+	
+	@Path("/listarCuentasAsociadasVerificadas")
+	@Produces(MediaType.APPLICATION_JSON)
+	@GET
+	public List<CuentaAsociada> listarCuentasVerificadas(@QueryParam("id") String cedula,@QueryParam("tipoId") String tipoId) {
+		Customer c = customerEJB.buscarCustomer(tipoId, cedula);
+
+		List<CuentaAsociada>accs= cuentaAsociadaEJB.listarCuentasAsociadasValidadas(c);
+		for (CuentaAsociada cuentaAsociada : accs) {
+			cuentaAsociada.getCustomer().setProductos(null);
+		}
+		return accs;
+	}
+
 
 	public boolean asociarCuenta(CuentaAsociada cuenta) {
 
@@ -106,18 +124,18 @@ public class CuentaAsociadaRest {
 		return claveGenerada;
 	}
 
-	@Path("/transferir")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@POST
-	public String transferir(@FormParam("cuenta") String numeroCuenta, @FormParam("cantidad") double cantidad) {
-
-		// SavingAccount cuenta =savAccountEJB.buscarSavingAccount(numeroCuenta);
-		// if (cuenta != null) {
-		boolean verificada = cuentaAsociadaEJB.transferenciaInterbancariaWS("3", numeroCuenta, cantidad);
-		if (verificada) {
-			return "EXITO";
-		}
-		return "ERROR";
-	}
+//	@Path("/transferir")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+//	@POST
+//	public String transferir(@FormParam("cuenta") String numeroCuenta, @FormParam("cantidad") double cantidad) {
+//
+//		// SavingAccount cuenta =savAccountEJB.buscarSavingAccount(numeroCuenta);
+//		// if (cuenta != null) {
+//		String verificada = cuentaAsociadaEJB.transferenciaInterbancariaWS("3", numeroCuenta, cantidad);
+//		if (verificada) {
+//			return "EXITO";
+//		}
+//		return "ERROR";
+//	}
 }

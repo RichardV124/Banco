@@ -108,27 +108,27 @@ public class SavingAccountEJB {
 	 *            cuenta de ahorros de la cual se va a retirar el saldo
 	 * @param monto
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void consignacionInterbancaria(SavingAccount sav, double monto, String clave) {
-		SegundaClave sc = segundaClaveEJB.buscar(clave);
-		if (sc != null) {
-			Calendar calendar = Calendar.getInstance();
-			Date fechaActual = calendar.getTime();
-			if (sc.getFechaVencimiento().getTime() < fechaActual.getTime()) {
-				if (sav.getAmmount() < monto) {
-					throw new ExcepcionNegocio("Esta cuenta no tiene suficiente saldo.");
-				} else {
-					sav.setAmmount(sav.getAmmount() - monto);
-					em.merge(sav);
-					crearTransaction(sav, monto);
-				}
-			} else {
-				throw new ExcepcionNegocio("Su clave está vencida");
-			}
-		} else {
-			throw new ExcepcionNegocio("Verifique su clave");
-		}
-	}
+//	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+//	public void consignacionInterbancaria(SavingAccount sav, double monto, String clave) {
+//		SegundaClave sc = segundaClaveEJB.buscar(clave);
+//		if (sc != null) {
+//			Calendar calendar = Calendar.getInstance();
+//			Date fechaActual = calendar.getTime();
+//			if (sc.getFechaVencimiento().getTime() < fechaActual.getTime()) {
+//				if (sav.getAmmount() < monto) {
+//					throw new ExcepcionNegocio("Esta cuenta no tiene suficiente saldo.");
+//				} else {
+//					sav.setAmmount(sav.getAmmount() - monto);
+//					em.merge(sav);
+//					crearTransaction(sav, monto);
+//				}
+//			} else {
+//				throw new ExcepcionNegocio("Su clave está vencida");
+//			}
+//		} else {
+//			throw new ExcepcionNegocio("Verifique su clave");
+//		}
+//	}
 
 	/**
 	 * Metodo para transferir saldo de una cuenta de ahorros a otra del mismo
@@ -290,7 +290,8 @@ public class SavingAccountEJB {
 	 * @param monto
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void crearTransactionWeb(SavingAccount sav, double monto) {
+	public void crearTransactionWeb(String numeroCuenta, double monto) {
+		SavingAccount sav = savingAccountEJB.buscarSavingAccount(numeroCuenta);
 		Transaction t = new Transaction();
 		t.setSavingAccNumber(sav);
 		t.setSourceTransact("WEB");
@@ -342,4 +343,38 @@ public class SavingAccountEJB {
 		return false;
 
 	}
+
+	/**
+	 * Metodo para consignar un monto de una cuenta a otra cuenta de diferente
+	 * banco
+	 * 
+	 * @param sav
+	 *            cuenta de ahorros de la cual se va a retirar el saldo
+	 * @param monto
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void transferirInterbancario(String numeroCuenta, double cantidad) {
+		double saldoNuevo = 0;
+		SavingAccount cuenta = em.find(SavingAccount.class, numeroCuenta);
+		if (cuenta == null) {
+			throw new ExcepcionNegocio("No existe esta cuenta de ahorros");
+		}
+		saldoNuevo = cuenta.getAmmount() - cantidad;
+		if (saldoNuevo <= 0) {
+			throw new ExcepcionNegocio(
+					"Su cuenta de ahorros no cuenta con suficiente saldo para realizar esta transaccion");
+
+		} else {
+			cuenta.setAmmount(saldoNuevo);
+			editarSavingAccount(cuenta);
+			crearTransaction(cuenta, cantidad);
+//FALTA PONER EL SERVICIO DE LOS MENSAJES
+		}
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void editarSavingAccount(SavingAccount sav) {
+		em.merge(sav);
+	}
+	
 }
