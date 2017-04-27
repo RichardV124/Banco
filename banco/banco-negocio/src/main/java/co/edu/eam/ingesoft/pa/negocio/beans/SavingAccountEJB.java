@@ -36,6 +36,9 @@ public class SavingAccountEJB {
 
 	@EJB
 	private CreditCardEJB creditCardEJB;
+	
+	@EJB
+	private CustomerEJB customerEJB;
 
 	@EJB
 	private SavingAccountEJB savingAccountEJB;
@@ -329,20 +332,25 @@ public class SavingAccountEJB {
 	 *            de la cuenta de ahorros
 	 * @return la cuenta de ahorros.
 	 */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public boolean verficarCuenta(String cuenta, String cedula, String tipoId) {
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public String verficarCuenta(String numeroCuenta, String cedula,String tipoId) {
+        String tipo="";
+        String estado = "ERROR";
+        if(tipoId.equals("1")){
+            tipo="CEDULA";
+        }else if(tipoId.equals("2")){
+            tipo="TARJETA IDENTIDAD";
+        }
+        SavingAccount c = buscarSavingAccount(numeroCuenta);
+        Customer cus = customerEJB.buscarCustomer(tipo, cedula);
+        if(cus!=null){
+            if(c!=null){
 
-		SavingAccount sav = em.find(SavingAccount.class, cuenta);
-		if (sav != null) {
-			if (sav.getCustomer().getIdType().equals(tipoId) && sav.getCustomer().getIdNum().equals(cedula)) {
-				return true;
-			}
-		} else {
-			throw new ExcepcionNegocio("La cuenta no existe en este banco");
-		}
-		return false;
-
-	}
+                estado= "EXITO";
+            }
+            }
+        return estado;
+    }
 
 	/**
 	 * Metodo para consignar un monto de una cuenta a otra cuenta de diferente

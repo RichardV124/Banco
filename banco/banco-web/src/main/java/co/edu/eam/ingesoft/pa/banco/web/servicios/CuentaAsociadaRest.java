@@ -62,7 +62,7 @@ public class CuentaAsociadaRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@POST
-	public boolean verificar(@FormParam("cuenta") String cuenta, @FormParam("id") String cedula,
+	public String verificar(@FormParam("cuenta") String cuenta, @FormParam("id") String cedula,
 			@FormParam("tipoId") String tipoId) {
 		return savAccountEJB.verficarCuenta(cuenta, cedula, tipoId);
 
