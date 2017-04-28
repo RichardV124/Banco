@@ -81,7 +81,7 @@ public class CuentaAsociadaEJB {
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<CuentaAsociada> listarCuentas(Customer cus) {
-		Query query = em.createNamedQuery(CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS_VALIDADAS);
+		Query query = em.createNamedQuery(CuentaAsociada.CONSULTA_LISTAR_CUENTAS_ASOCIADAS);
 		query.setParameter(1, cus);
 		List<CuentaAsociada> cuentas = query.getResultList();
 		if (cuentas.isEmpty()) {
@@ -180,7 +180,7 @@ public class CuentaAsociadaEJB {
 
 	}
 
-	public String transferenciaInterbancariaWS(String idBanco, String numeroCuenta, double monto) {
+	public String transferenciaInterbancariaWS(String idBanco, int numeroCuenta, double monto) {
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
@@ -188,10 +188,10 @@ public class CuentaAsociadaEJB {
 		BindingProvider bp = (BindingProvider) servicio;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 
-		RespuestaServicio resp = servicio.transferirMonto(idBanco, numeroCuenta, monto);
+		RespuestaServicio resp = servicio.transferirMonto(idBanco, numeroCuenta+"", monto);
 		if (resp.getCodigo().equals("0000")) {
 			
-			savAccountEJB.crearTransactionWeb(numeroCuenta, monto);
+			savAccountEJB.crearTransactionWeb(numeroCuenta+"", monto);
 			return resp.getMensaje();
 		}
 		return resp.getMensaje();

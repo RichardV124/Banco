@@ -32,7 +32,7 @@ public class TransferirCuentaAsociada implements Serializable {
 	/**
 	 * cuenta de ahorros seleccionada
 	 */
-	private String asociadaSeleccionada;
+	private int asociadaSeleccionada;
 
 	/**
 	 * cuenta de ahorros seleccionada
@@ -139,7 +139,9 @@ public class TransferirCuentaAsociada implements Serializable {
 	public void transferir() {
 		try {
 			if(verificada){
-				savingAccountEJB.tranferenciaInterbancaria(asociadaSeleccionada, cuentaSeleccionada, monto);
+				CuentaAsociada asociada = asociadaCuentaEJB.buscar(asociadaSeleccionada);
+				//savingAccountEJB.tranferenciaInterbancaria(asociadaSeleccionada, cuentaSeleccionada, monto);
+			asociadaCuentaEJB.transferenciaInterbancariaWS(asociada.getBank().getId(), asociadaSeleccionada, monto);
 			Messages.addFlashGlobalInfo("Se hizo el avance correctamente");
 			}else{
 				Messages.addFlashGlobalInfo("Debe confirmar el codigo de seguridad");
@@ -155,11 +157,13 @@ public class TransferirCuentaAsociada implements Serializable {
 		}
 	}
 
-	public String getAsociadaSeleccionada() {
+
+
+	public int getAsociadaSeleccionada() {
 		return asociadaSeleccionada;
 	}
 
-	public void setAsociadaSeleccionada(String asociadaSeleccionada) {
+	public void setAsociadaSeleccionada(int asociadaSeleccionada) {
 		this.asociadaSeleccionada = asociadaSeleccionada;
 	}
 
