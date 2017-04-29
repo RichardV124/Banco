@@ -30,10 +30,10 @@ public class CuentaAsociada implements Serializable{
 	/**
 	 * id autoincrementable de la cuenta asociada
 	 */
-	@Id
-	@Column(name="id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+//	@Id
+//	@Column(name="id")
+//	@GeneratedValue(strategy=GenerationType.IDENTITY)
+//	private String id;
 	
 	@Column(name="owner_name", nullable=false)
 	private String ownerName;
@@ -55,6 +55,7 @@ public class CuentaAsociada implements Serializable{
 	@ManyToOne(cascade = {})
 	private Customer customer;
 	
+	@Id
 	@Column(name="number", nullable=false)
 	private String number;
 	
@@ -69,27 +70,27 @@ public class CuentaAsociada implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public CuentaAsociada(int id, String ownerName, String ownerTypeId, String ownerNumId, Bank bank, Customer customer,
-			String number, String name) {
-		super();
-		this.id = id;
-		this.ownerName = ownerName;
-		this.ownerTypeId = ownerTypeId;
-		this.ownerNumId = ownerNumId;
-		this.bank = bank;
-		this.customer = customer;
-		this.number = number;
-		this.name = name;
-		this.estado = "no verificada";
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
+//	public CuentaAsociada(int id, String ownerName, String ownerTypeId, String ownerNumId, Bank bank, Customer customer,
+//			String number, String name) {
+//		super();
+//		this.id = id;
+//		this.ownerName = ownerName;
+//		this.ownerTypeId = ownerTypeId;
+//		this.ownerNumId = ownerNumId;
+//		this.bank = bank;
+//		this.customer = customer;
+//		this.number = number;
+//		this.name = name;
+//		this.estado = "no verificada";
+//	}
+//
+//	public int getId() {
+//		return id;
+//	}
+//
+//	public void setId(int id) {
+//		this.id = id;
+//	}
 
 	public String getOwnerName() {
 		return ownerName;

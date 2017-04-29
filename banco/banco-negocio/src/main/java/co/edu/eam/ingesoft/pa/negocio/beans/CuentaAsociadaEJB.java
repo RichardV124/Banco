@@ -35,7 +35,7 @@ public class CuentaAsociadaEJB {
 
 	@PersistenceContext
 	private EntityManager em;
-	
+
 	@EJB
 	private SavingAccountEJB savAccountEJB;
 
@@ -47,7 +47,7 @@ public class CuentaAsociadaEJB {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void crear(CuentaAsociada cuenta) {
-		CuentaAsociada ca = buscar(cuenta.getId());
+		CuentaAsociada ca = buscar(cuenta.getNumber());
 		if (ca != null) {
 			throw new ExcepcionNegocio("La cuenta ya está asociada");
 		} else {
@@ -64,7 +64,7 @@ public class CuentaAsociadaEJB {
 	 *         cuenta asociada
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public CuentaAsociada buscar(int id) {
+	public CuentaAsociada buscar(String id) {
 		CuentaAsociada ca = em.find(CuentaAsociada.class, id);
 		if (ca != null) {
 			return ca;
@@ -87,7 +87,7 @@ public class CuentaAsociadaEJB {
 		if (cuentas.isEmpty()) {
 			throw new ExcepcionNegocio("Este cliente no tiene ninguna cuenta asociada");
 		} else {
-			
+
 			return cuentas;
 		}
 	}
@@ -118,7 +118,7 @@ public class CuentaAsociadaEJB {
 	 *            cuenta asociada a eliminar
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void eliminar(int id) {
+	public void eliminar(String id) {
 		CuentaAsociada ca = em.find(CuentaAsociada.class, id);
 		em.remove(ca);
 	}
@@ -153,15 +153,13 @@ public class CuentaAsociadaEJB {
 		if (resp.getMensaje().equalsIgnoreCase("NO_VALIDA")) {
 			cuenta.setEstado(resp.getMensaje());
 			editar(cuenta);
-			System.out.println(cuenta.getId());
-			eliminar(cuenta.getId());
+			System.out.println(cuenta.getNumber());
+			eliminar(cuenta.getNumber());
 		} else {
 			cuenta.setEstado(resp.getMensaje());
 			editar(cuenta);
 		}
 	}
-	
-	
 
 	/**
 	 * MEtodo para editar una cuenta asociada...
@@ -170,7 +168,7 @@ public class CuentaAsociadaEJB {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void editar(CuentaAsociada ca) {
-		CuentaAsociada busc = buscar(ca.getId());
+		CuentaAsociada busc = buscar(ca.getNumber());
 		// no existe,no se puede editar...
 		if (busc != null) {
 			em.merge(ca);
@@ -180,21 +178,22 @@ public class CuentaAsociadaEJB {
 
 	}
 
-	public String transferenciaInterbancariaWS(String idBanco, int numeroCuenta, double monto) {
+	public String transferenciaInterbancariaWS(String idBanco, String numeroCuenta, double monto) {
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
-		String endpointURL = "http://104.197.238.134:8080/interbancario/InterbancarioWS";
+		String endpointURL = "http://104.155.128.249:8080/interbancario/InterbancarioWS/InterbancarioWS";
 		BindingProvider bp = (BindingProvider) servicio;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
-
-		RespuestaServicio resp = servicio.transferirMonto(idBanco, numeroCuenta+"", monto);
+		System.out.println("ANTES DEL SOAP");
+		RespuestaServicio resp = servicio.transferirMonto(idBanco, numeroCuenta, monto);
+		System.out.println(resp.getMensaje() + "ASJDAKSDJ");
 		if (resp.getCodigo().equals("0000")) {
-			
-			savAccountEJB.crearTransactionWeb(numeroCuenta+"", monto);
+
+			savAccountEJB.crearTransactionWeb(numeroCuenta, monto);
+			System.out.println(resp.getMensaje() + "ASJDAKSDJ");
 			return resp.getMensaje();
 		}
 		return resp.getMensaje();
 	}
 }
-

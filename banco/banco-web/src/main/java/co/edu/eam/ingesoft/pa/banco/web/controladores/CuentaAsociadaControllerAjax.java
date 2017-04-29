@@ -143,7 +143,7 @@ public class CuentaAsociadaControllerAjax implements Serializable {
 	public void eliminarCuenta(CuentaAsociada cuenta) {
 		// int id = cuenta.getId();
 		// CuentaAsociada ca = cuentaAsociadaEJB.buscar(id);
-		cuentaAsociadaEJB.eliminar(cuenta.getId());
+		cuentaAsociadaEJB.eliminar(cuenta.getNumber());
 		Messages.addFlashGlobalInfo("Se ha eliminado la cuenta asociada con exito!");
 		actualizarListadoCuentas();
 	}

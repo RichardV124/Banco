@@ -32,7 +32,7 @@ public class TransferirCuentaAsociada implements Serializable {
 	/**
 	 * cuenta de ahorros seleccionada
 	 */
-	private int asociadaSeleccionada;
+	private String asociadaSeleccionada;
 
 	/**
 	 * cuenta de ahorros seleccionada
@@ -43,7 +43,7 @@ public class TransferirCuentaAsociada implements Serializable {
 	 * cuenta de ahorros seleccionada
 	 */
 	private String claveGenerada;
-	
+
 	/**
 	 * True si esta verificada en caso contrario false
 	 */
@@ -97,7 +97,7 @@ public class TransferirCuentaAsociada implements Serializable {
 		try {
 			usuario = Faces.getSessionAttribute("user");
 			cuentas = savingAccountEJB.listarCuentasCliente(usuario.getCustomer());
-			asociadas = asociadaCuentaEJB.listarCuentas(usuario.getCustomer());
+			asociadas = asociadaCuentaEJB.listarCuentasAsociadasValidadas(usuario.getCustomer());
 			claveGenerada = null;
 			verificada = false;
 		} catch (ExcepcionNegocio e1) {
@@ -114,39 +114,34 @@ public class TransferirCuentaAsociada implements Serializable {
 		claveGenerada = segundaClaveEJB.generarClave();
 		SegundaClave sc = new SegundaClave();
 		sc.setClave(claveGenerada);
-		segundaClaveEJB.crear(sc,usuario.getCustomer());
+		segundaClaveEJB.crear(sc, usuario.getCustomer());
 		segundaClaveEJB.enviarEmail(claveGenerada, usuario.getCustomer().getEmail());
-		System.out.println("Se ha enviado al correo: "+usuario.getCustomer().getEmail());
-		//segundaClaveEJB.enviarSms(claveGenerada, usuario.getCustomer().getNumberPhone());
+		System.out.println("Se ha enviado al correo: " + usuario.getCustomer().getEmail() + "CODIGO:" +claveGenerada);
+		segundaClaveEJB.enviarSms(claveGenerada,usuario.getCustomer().getNumberPhone());
+		System.out.println("Se ha enviado al correo: " + usuario.getCustomer().getNumberPhone() + "CODIGO:" +claveGenerada);
 	}
 
-	public void verificar() {
-		if(claveGenerada==null){
-			Messages.addFlashGlobalInfo("Debe generar la clave de confirmacion primero");
-		}else{
-		SegundaClave sc = segundaClaveEJB.buscar(codigoverificacion);
-		if(sc.getFechaGeneracion().before(sc.getFechaVencimiento())){
-		//if(sc.getFechaGeneracion().compareTo(sc.getFechaVencimiento())>0){
-			verificada = true;
-			Messages.addFlashGlobalInfo("Clave verificada");
-		}else{
-			Messages.addFlashGlobalInfo("Esta clave se ha vencido, porfavor genere otra clave "
-					+ "para completar su transaccion");
-		}
-		}
-	}
-	
 	public void transferir() {
 		try {
-			if(verificada){
-				CuentaAsociada asociada = asociadaCuentaEJB.buscar(asociadaSeleccionada);
-				//savingAccountEJB.tranferenciaInterbancaria(asociadaSeleccionada, cuentaSeleccionada, monto);
-			asociadaCuentaEJB.transferenciaInterbancariaWS(asociada.getBank().getId(), asociadaSeleccionada, monto);
-			Messages.addFlashGlobalInfo("Se hizo el avance correctamente");
-			}else{
-				Messages.addFlashGlobalInfo("Debe confirmar el codigo de seguridad");
+
+			SegundaClave sc = segundaClaveEJB.buscar(codigoverificacion);
+			if (sc == null) {
+				Messages.addFlashGlobalInfo("La clave ingresada incorrecta");
+			} else {
+				if (sc.getFechaGeneracion().before(sc.getFechaVencimiento())) {
+					// if(sc.getFechaGeneracion().compareTo(sc.getFechaVencimiento())>0){
+					CuentaAsociada asociada = asociadaCuentaEJB.buscar(asociadaSeleccionada);
+					// savingAccountEJB.tranferenciaInterbancaria(asociadaSeleccionada,
+					// cuentaSeleccionada, monto);
+					asociadaCuentaEJB.transferenciaInterbancariaWS(asociada.getBank().getId(), asociadaSeleccionada,
+							monto);
+					Messages.addFlashGlobalInfo("Se hizo el avance correctamente");
+				} else {
+					Messages.addFlashGlobalInfo(
+							"Esta clave se ha vencido, porfavor genere otra clave " + "para completar su transaccion");
+				}
 			}
-			
+
 		} catch (ExcepcionNegocio e1) {
 			Messages.addFlashGlobalError(e1.getMessage());
 			e1.printStackTrace();
@@ -156,14 +151,18 @@ public class TransferirCuentaAsociada implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void cancelar(){
+		
+	}
 
 
 
-	public int getAsociadaSeleccionada() {
+	public String getAsociadaSeleccionada() {
 		return asociadaSeleccionada;
 	}
 
-	public void setAsociadaSeleccionada(int asociadaSeleccionada) {
+	public void setAsociadaSeleccionada(String asociadaSeleccionada) {
 		this.asociadaSeleccionada = asociadaSeleccionada;
 	}
 

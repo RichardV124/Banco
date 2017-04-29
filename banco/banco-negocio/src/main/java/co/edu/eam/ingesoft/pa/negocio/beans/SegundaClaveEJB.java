@@ -40,10 +40,12 @@ public class SegundaClaveEJB {
 	public void crear(SegundaClave sc,Customer c){
 		//String clave = generarClave();
 		sc.setClave(sc.getClave());
-		Date fechaGeneracion = fechaGeneracion();
-		sc.setFechaGeneracion(fechaGeneracion);
-		Date fechaVencimiento = fechaVencimiento();
-		sc.setFechaVencimiento(fechaVencimiento);
+		//Date fechaGeneracion = fechaGeneracion();
+		sc.setFechaGeneracion(new Date());
+		//Date fechaVencimiento = fechaVencimiento();
+		Date d = new Date();
+		d.setMinutes(d.getMinutes()+2);
+		sc.setFechaVencimiento(d);
 		sc.setCustomer(c);
 		
 		SegundaClave s = buscar(sc.getClave());
@@ -62,11 +64,11 @@ public class SegundaClaveEJB {
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public SegundaClave buscar(String clave){
 		
-		SegundaClave sc = em.find(SegundaClave.class, clave);
-		if(sc==null){
-			throw new ExcepcionNegocio("La clave ingresada no coincide con la generada");
-		}
-		return sc;
+//		SegundaClave sc = em.find(SegundaClave.class, clave);
+//		if(sc==null){
+//			throw new ExcepcionNegocio("La clave ingresada no coincide con la generada");
+//		}
+		return em.find(SegundaClave.class, clave);
 	}
 	
 	/**
