@@ -61,12 +61,7 @@ public class SegundaClaveEJB {
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public SegundaClave buscar(String clave){
-		
-		SegundaClave sc = em.find(SegundaClave.class, clave);
-		if(sc==null){
-			throw new ExcepcionNegocio("La clave ingresada no coincide con la generada");
-		}
-		return sc;
+		return em.find(SegundaClave.class, clave);
 	}
 	
 	/**

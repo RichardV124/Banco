@@ -116,7 +116,7 @@ public class TransferirCuentaAsociada implements Serializable {
 		sc.setClave(claveGenerada);
 		segundaClaveEJB.crear(sc,usuario.getCustomer());
 		segundaClaveEJB.enviarEmail(claveGenerada, usuario.getCustomer().getEmail());
-		System.out.println("Se ha enviado al correo: "+usuario.getCustomer().getEmail());
+		System.out.println("Se ha enviado al correo: "+usuario.getCustomer().getEmail()+" clave "+claveGenerada);
 		//segundaClaveEJB.enviarSms(claveGenerada, usuario.getCustomer().getNumberPhone());
 	}
 
