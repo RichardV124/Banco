@@ -15,6 +15,7 @@ import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Customer;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Usuario;
 import co.edu.eam.ingesoft.pa.negocio.beans.CustomerEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.SeguridadEJB;
+import co.edu.eam.ingesoft.pa.negocio.dto.UsuarioDTO;
 
 //para invocar un servicio se necesita:
 /*
@@ -38,13 +39,13 @@ public class UsuarioRest {
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public RespuestaDTO login(@FormParam("usuario") String user,@FormParam("contrasena") String pass) {
+	public RespuestaDTO login(UsuarioDTO dto) {
 
-			Usuario usuario=segEJB.buscarUsuario(user);
+			Usuario usuario=segEJB.buscarUsuario(dto.getUser());
 			System.out.println(usuario.getCustomer().getName()+" JAJSJASJ");
 			if(usuario!=null){
-				System.out.println(usuario.getPassword().equals(pass)+" GG");
-				if(usuario.getPassword().equals(pass)){
+				System.out.println(usuario.getPassword().equals(dto.getPassword())+" GG");
+				if(usuario.getPassword().equals(dto.getPassword())){
 					Customer cus = usuario.getCustomer();
 					cus.setProductos(null);
 					return new RespuestaDTO("Se encontro!", 0, cus);
