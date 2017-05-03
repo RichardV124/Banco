@@ -66,7 +66,7 @@ public class CuentaAsociada implements Serializable{
 	private String estado;
 
 	public CuentaAsociada() {
-		this.estado = "no verificada";
+		this.estado = "No verificada";
 		// TODO Auto-generated constructor stub
 	}
 

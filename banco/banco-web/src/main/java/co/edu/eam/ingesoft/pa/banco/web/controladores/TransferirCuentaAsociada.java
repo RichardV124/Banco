@@ -115,9 +115,10 @@ public class TransferirCuentaAsociada implements Serializable {
 		SegundaClave sc = new SegundaClave();
 		sc.setClave(claveGenerada);
 		segundaClaveEJB.crear(sc, usuario.getCustomer());
-		segundaClaveEJB.enviarEmail(claveGenerada, usuario.getCustomer().getEmail());
+		String msj = "Su codigo de verificacion es: " + claveGenerada + "\n \nSu codigo expirara en 90 minutos";
+		segundaClaveEJB.enviarEmail( usuario.getCustomer().getEmail(),msj);
 		System.out.println("Se ha enviado al correo: " + usuario.getCustomer().getEmail() + "CODIGO:" +claveGenerada);
-		segundaClaveEJB.enviarSms(claveGenerada,usuario.getCustomer().getNumberPhone());
+		segundaClaveEJB.enviarSms(usuario.getCustomer().getNumberPhone(),msj);
 		System.out.println("Se ha enviado al correo: " + usuario.getCustomer().getNumberPhone() + "CODIGO:" +claveGenerada);
 	}
 
@@ -131,10 +132,8 @@ public class TransferirCuentaAsociada implements Serializable {
 				if (sc.getFechaGeneracion().before(sc.getFechaVencimiento())) {
 					// if(sc.getFechaGeneracion().compareTo(sc.getFechaVencimiento())>0){
 					CuentaAsociada asociada = asociadaCuentaEJB.buscar(asociadaSeleccionada);
-					// savingAccountEJB.tranferenciaInterbancaria(asociadaSeleccionada,
-					// cuentaSeleccionada, monto);
 					asociadaCuentaEJB.transferenciaInterbancariaWS(asociada.getBank().getId(), asociadaSeleccionada,
-							monto);
+							monto,cuentaSeleccionada);
 					Messages.addFlashGlobalInfo("Se hizo el avance correctamente");
 				} else {
 					Messages.addFlashGlobalInfo(

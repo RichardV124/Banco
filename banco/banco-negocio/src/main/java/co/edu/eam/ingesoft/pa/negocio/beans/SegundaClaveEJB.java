@@ -108,7 +108,7 @@ public class SegundaClaveEJB {
 		return fechaVencimiento;
 	}
 	
-	public void enviarSms(String claveGenerada,String numeroTelefono){
+	public void enviarSms(String numeroTelefono,String msje){
 		
 		NotificacionesService cliente = new NotificacionesService();
 		Notificaciones servicio = cliente.getNotificacionesPort();
@@ -119,7 +119,7 @@ public class SegundaClaveEJB {
 
 		Sms msj = new Sms();
 		// Mensaje
-		msj.setTexto("Su codigo de verificacion es: " + claveGenerada + "\n \nSu codigo expirara en 90 minutos");
+		msj.setTexto(msje);
 		// A quien se le envia
 		msj.setTo(numeroTelefono);
 		
@@ -128,7 +128,7 @@ public class SegundaClaveEJB {
 		
 	}
 	
-	public void enviarEmail(String claveGenerada,String email){
+	public void enviarEmail(String email,String msj){
 		NotificacionesService cliente = new NotificacionesService();
 		Notificaciones servicio = cliente.getNotificacionesPort();
 
@@ -138,13 +138,13 @@ public class SegundaClaveEJB {
 
 		Mail correo = new Mail();
 		// Mensaje
-		correo.setBody("Su codigo de verificacion es: " + claveGenerada + "\n \nSu codigo expirara en 90 minutos");
+		correo.setBody(msj);
 		//
 		correo.setFrom("idontknow@eam.edu.co");
 		// A quien se le envia
 		correo.setTo(email);
 		// Asunto
-		correo.setSubject("Codigo de verificacion BANCO TRIVINIERS");
+		correo.setSubject("BANCO TRIVINIERS");
 		RespuestaNotificacion resp = servicio.enviarMail(correo);
 		System.out.println(resp.getMensaje());
 	}

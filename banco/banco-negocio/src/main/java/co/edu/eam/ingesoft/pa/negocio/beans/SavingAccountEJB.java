@@ -83,6 +83,11 @@ public class SavingAccountEJB {
 		sav.setAmmount(sav.getAmmount() + monto);
 		em.merge(sav);
 		crearTransaction(sav, monto);
+		segundaClaveEJB.enviarEmail(sav.getCustomer().getEmail(), "Se le ha consignado "+monto+" a su cuenta"
+				+ " de ahorros con numero" +sav.getNumber() +"correctamente");
+		segundaClaveEJB.enviarSms(sav.getCustomer().getNumberPhone(), "Se le ha consignado "+monto+" a su cuenta"
+				+ " de ahorros con numero" +sav.getNumber() +"correctamente");
+		
 	}
 
 	/**
@@ -100,38 +105,11 @@ public class SavingAccountEJB {
 			sav.setAmmount(sav.getAmmount() - monto);
 			em.merge(sav);
 			crearTransaction(sav, monto);
+			segundaClaveEJB.enviarEmail(sav.getCustomer().getEmail(), "Se ha retirado "+monto+" de su cuenta de ahorros correctamente");
+			segundaClaveEJB.enviarSms(sav.getCustomer().getNumberPhone(), "Se ha retirado "+monto+" de su cuenta de ahorros correctamente");
+			
 		}
 	}
-
-	/**
-	 * Metodo para consignar un monto de una cuenta a otra cuenta de diferente
-	 * banco
-	 * 
-	 * @param sav
-	 *            cuenta de ahorros de la cual se va a retirar el saldo
-	 * @param monto
-	 */
-//	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-//	public void consignacionInterbancaria(SavingAccount sav, double monto, String clave) {
-//		SegundaClave sc = segundaClaveEJB.buscar(clave);
-//		if (sc != null) {
-//			Calendar calendar = Calendar.getInstance();
-//			Date fechaActual = calendar.getTime();
-//			if (sc.getFechaVencimiento().getTime() < fechaActual.getTime()) {
-//				if (sav.getAmmount() < monto) {
-//					throw new ExcepcionNegocio("Esta cuenta no tiene suficiente saldo.");
-//				} else {
-//					sav.setAmmount(sav.getAmmount() - monto);
-//					em.merge(sav);
-//					crearTransaction(sav, monto);
-//				}
-//			} else {
-//				throw new ExcepcionNegocio("Su clave está vencida");
-//			}
-//		} else {
-//			throw new ExcepcionNegocio("Verifique su clave");
-//		}
-//	}
 
 	/**
 	 * Metodo para transferir saldo de una cuenta de ahorros a otra del mismo
@@ -164,7 +142,7 @@ public class SavingAccountEJB {
 	 * @throws Exception
 	 */
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public List<SavingAccount> listarCuentasCliente(Customer c) throws Exception {
+	public List<SavingAccount> listarCuentasCliente(Customer c) {
 
 		Query query = em.createNamedQuery(SavingAccount.CONSULTA_LISTAR_CUENTAS_CUSTOMER);
 		query.setParameter(1, c);
@@ -301,6 +279,9 @@ public class SavingAccountEJB {
 		t.setAmmount(monto);
 		t.setTransactionDate(new Date());
 		em.persist(t);
+		segundaClaveEJB.enviarEmail(sav.getCustomer().getEmail(), "Se ha retirado "+monto+" de su cuenta de ahorros correctamente");
+		segundaClaveEJB.enviarSms(sav.getCustomer().getNumberPhone(), "Se ha retirado "+monto+" de su cuenta de ahorros correctamente");
+		
 	}
 
 	/**
@@ -317,7 +298,6 @@ public class SavingAccountEJB {
 
 		// CuentaAsociada tarjeta = asociadaEJB.buscar(id);
 		SavingAccount cuenta = savingAccountEJB.buscarSavingAccount(numeroCuenta);
-
 		// Editar cuenta
 		cuenta.setAmmount(cuenta.getAmmount() + monto);
 		em.merge(cuenta);
@@ -376,13 +356,16 @@ public class SavingAccountEJB {
 			cuenta.setAmmount(saldoNuevo);
 			editarSavingAccount(cuenta);
 			crearTransaction(cuenta, cantidad);
-//FALTA PONER EL SERVICIO DE LOS MENSAJES
+			segundaClaveEJB.enviarEmail(cuenta.getCustomer().getEmail(), "Se ha retirado "+cantidad+" de su cuenta de ahorros correctamente");
+//			segundaClaveEJB.enviarSms(cuenta.getCustomer().getNumberPhone(), "Se ha retirado "+cantidad+" de su cuenta de ahorros correctamente");
+			
 		}
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void editarSavingAccount(SavingAccount sav) {
 		em.merge(sav);
+		System.out.println("EDITO WACHIN");
 	}
 	
 }

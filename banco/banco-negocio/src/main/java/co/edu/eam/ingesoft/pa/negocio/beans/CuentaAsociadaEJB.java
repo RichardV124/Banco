@@ -22,11 +22,6 @@ import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.InterbancarioWS_
 import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.RegistrarCuentaAsociada;
 import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.RespuestaServicio;
 import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.TipoDocumentoEnum;
-import co.edu.eam.ingesoft.pa.negocio.serviciosinterbancariosws.TransferirMonto;
-import co.edu.eam.pa.clientews.Notificaciones;
-import co.edu.eam.pa.clientews.NotificacionesService;
-import co.edu.eam.pa.clientews.RespuestaNotificacion;
-import co.edu.eam.pa.clientews.Sms;
 
 @LocalBean
 @Stateless
@@ -178,7 +173,7 @@ public class CuentaAsociadaEJB {
 
 	}
 
-	public String transferenciaInterbancariaWS(String idBanco, String numeroCuenta, double monto) {
+	public String transferenciaInterbancariaWS(String idBanco, String numerocuenta, double monto,String cuentaAhorros) {
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
@@ -186,12 +181,13 @@ public class CuentaAsociadaEJB {
 		BindingProvider bp = (BindingProvider) servicio;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 		System.out.println("ANTES DEL SOAP");
-		RespuestaServicio resp = servicio.transferirMonto(idBanco, numeroCuenta, monto);
-		System.out.println(resp.getMensaje() + "ASJDAKSDJ");
-		if (resp.getCodigo().equals("0000")) {
-
-			savAccountEJB.crearTransactionWeb(numeroCuenta, monto);
-			System.out.println(resp.getMensaje() + "ASJDAKSDJ");
+		RespuestaServicio resp = servicio.transferirMonto(idBanco, numerocuenta, monto);
+		System.out.println("CODIGO: " +resp.getCodigo());
+		
+		if (resp.getCodigo().equals("-500")) {
+			System.out.println("DESPUES DEL SOAP  "+"CUENTA: "+cuentaAhorros+" MONTO: "+monto);
+			savAccountEJB.transferirInterbancario(cuentaAhorros, monto);
+			System.out.println("ANTES DE RETORNO MENSAJE");
 			return resp.getMensaje();
 		}
 		return resp.getMensaje();

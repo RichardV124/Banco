@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,18 +11,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.omnifaces.util.Messages;
-
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Bank;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CuentaAsociada;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Customer;
-import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SavingAccount;
-import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SegundaClave;
 import co.edu.eam.ingesoft.pa.negocio.beans.BankEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.CuentaAsociadaEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.CustomerEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.SavingAccountEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.SegundaClaveEJB;
+import co.edu.eam.ingesoft.pa.negocio.dto.CuentaAsociadaDTO;
 
 //para invocar un servicio se necesita:
 /*
@@ -44,7 +40,6 @@ public class CuentaAsociadaRest {
 	 */
 	@EJB
 	private SegundaClaveEJB segundaClaveEJB;
-	
 
 	/**
 	 * EJB de la segunda clave
@@ -58,84 +53,61 @@ public class CuentaAsociadaRest {
 	@EJB
 	private BankEJB bankEJB;
 
-	@Path("/verificar")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@POST
-	public String verificar(@FormParam("cuenta") String cuenta, @FormParam("id") String cedula,
-			@FormParam("tipoId") String tipoId) {
-		return savAccountEJB.verficarCuenta(cuenta, cedula, tipoId);
-
-	}
-
 	@Path("/listarBancos")
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
-	public List<Bank> listarBancos() {
+	public RespuestaDTO listarBancos() {
 
-		return bankEJB.listarBancosWS();
+		List<Bank> lista = bankEJB.listarBancosWS();
+
+		if (lista.isEmpty()) {
+			return new RespuestaDTO("No hay registros", 1, null);
+		} else {
+			return new RespuestaDTO("Se encontraron registros", 0, lista);
+		}
+
 	}
 
+	@GET
 	@Path("/listarCuentasAsociadas")
 	@Produces(MediaType.APPLICATION_JSON)
-	@GET
-	public List<CuentaAsociada> listarCuentas(@QueryParam("id") String cedula,@QueryParam("tipoId") String tipoId) {
+	public RespuestaDTO listarCuentas(@QueryParam("id") String cedula, @QueryParam("tipoId") String tipoId) {
+
 		Customer c = customerEJB.buscarCustomer(tipoId, cedula);
 
-		List<CuentaAsociada>accs= cuentaAsociadaEJB.listarCuentas(c);
-		for (CuentaAsociada cuentaAsociada : accs) {
-			cuentaAsociada.getCustomer().setProductos(null);
+		List<CuentaAsociada> lista = cuentaAsociadaEJB.listarCuentas(c);
+
+		if (lista.isEmpty()) {
+			return new RespuestaDTO("No hay registros", 1, null);
+		} else {
+			return new RespuestaDTO("Se encontraron registros", 0, lista);
 		}
-		return accs;
 	}
-	
-	@Path("/listarCuentasAsociadasVerificadas")
+
+	@POST
+	@Path("/asociarCuenta")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@GET
-	public List<CuentaAsociada> listarCuentasVerificadas(@QueryParam("id") String cedula,@QueryParam("tipoId") String tipoId) {
-		Customer c = customerEJB.buscarCustomer(tipoId, cedula);
+	public RespuestaDTO asociarCuenta(CuentaAsociadaDTO cuentaAsociada) {
 
-		List<CuentaAsociada>accs= cuentaAsociadaEJB.listarCuentasAsociadasValidadas(c);
-		for (CuentaAsociada cuentaAsociada : accs) {
-			cuentaAsociada.getCustomer().setProductos(null);
+		if (cuentaAsociada != null) {
+
+			CuentaAsociada ca = new CuentaAsociada();
+			ca.setOwnerName(cuentaAsociada.getOwnerName());
+			ca.setOwnerTypeId(cuentaAsociada.getOwnerTypeId());
+			ca.setOwnerNumId(cuentaAsociada.getOwnerNumId());
+			Bank b = bankEJB.buscar(cuentaAsociada.getBank());
+			ca.setBank(b);
+			Customer cus = customerEJB.buscarCustomer(cuentaAsociada.getIdType(), cuentaAsociada.getIdNum());
+			ca.setCustomer(cus);
+			ca.setNumber(cuentaAsociada.getNumber());
+			ca.setName(cuentaAsociada.getName());
+
+			cuentaAsociadaEJB.crear(ca);
+			return new RespuestaDTO("Se hizo la peticion de asociacion correctamente", 0, null);
 		}
-		return accs;
+
+		return new RespuestaDTO("Hubo un error al hacer la peticion de asociacion", 1, null);
 	}
 
-
-	public boolean asociarCuenta(CuentaAsociada cuenta) {
-
-		if (cuenta == null) {
-			return false;
-		}
-
-		cuentaAsociadaEJB.crear(cuenta);
-		return true;
-	}
-
-	public String generarEnviarCodigo(Customer cus) {
-
-		String claveGenerada = segundaClaveEJB.generarClave();
-		SegundaClave sc = new SegundaClave();
-		sc.setClave(claveGenerada);
-		segundaClaveEJB.crear(sc, cus);
-		// segundaClaveEJB.enviarEmail(claveGenerada, cus);
-
-		return claveGenerada;
-	}
-
-//	@Path("/transferir")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-//	@POST
-//	public String transferir(@FormParam("cuenta") String numeroCuenta, @FormParam("cantidad") double cantidad) {
-//
-//		// SavingAccount cuenta =savAccountEJB.buscarSavingAccount(numeroCuenta);
-//		// if (cuenta != null) {
-//		String verificada = cuentaAsociadaEJB.transferenciaInterbancariaWS("3", numeroCuenta, cantidad);
-//		if (verificada) {
-//			return "EXITO";
-//		}
-//		return "ERROR";
-//	}
 }
