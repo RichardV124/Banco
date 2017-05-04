@@ -37,7 +37,7 @@ public class UsuarioRest {
 	
 	@POST
 	@Path("/login")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public RespuestaDTO login(UsuarioDTO dto) {
 
