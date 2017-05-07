@@ -1,6 +1,6 @@
 package co.edu.eam.ingesoft.pa.negocio.dto;
 
-public class UsuarioDTO {
+public class LoginDTO {
 
 	
 	private String user;
@@ -8,7 +8,7 @@ public class UsuarioDTO {
 	private String password;
 
 	
-	public UsuarioDTO() {
+	public LoginDTO() {
 		super();
 	}
 

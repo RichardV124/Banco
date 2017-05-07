@@ -159,6 +159,7 @@ public class TransferirRest {
 		segundaClaveEJB.crear(sc, cus);
 		String msj = "Su codigo de verificacion es: " + claveGenerada + "\n \nSu codigo expirara en 90 minutos";
 		segundaClaveEJB.enviarEmail(claveGenerada, msj);
+		segundaClaveEJB.enviarSms(claveGenerada, msj);
 
 		return new RespuestaDTO("Se encontraron registros", 0, claveGenerada);
 	}
