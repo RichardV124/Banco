@@ -3,30 +3,47 @@ package co.edu.eam.ingesoft.pa.negocio.dto;
 public class LoginRespuestaDTO {
 
 	private String token;
-	private String identificacion;
+	private String idType;
+	private String idNum;
 	
 	public LoginRespuestaDTO() {
 		// TODO Auto-generated constructor stub
-	}	
+	}
+
 	
-	public LoginRespuestaDTO(String token, String identificacion) {
+	
+	public LoginRespuestaDTO(String token, String idType, String idNum) {
 		super();
 		this.token = token;
-		this.identificacion = identificacion;
+		this.idType = idType;
+		this.idNum = idNum;
 	}
 
 	public String getToken() {
 		return token;
 	}
+
 	public void setToken(String token) {
 		this.token = token;
 	}
-	public String getIdentificacion() {
-		return identificacion;
+
+	public String getIdType() {
+		return idType;
 	}
-	public void setIdentificacion(String identificacion) {
-		this.identificacion = identificacion;
+
+	public void setIdType(String idType) {
+		this.idType = idType;
 	}
+
+	public String getIdNum() {
+		return idNum;
+	}
+
+	public void setIdNum(String idNum) {
+		this.idNum = idNum;
+	}	
+	
+	
 	
 	
 }

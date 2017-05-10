@@ -1,5 +1,6 @@
 package co.edu.eam.ingesoft.pa.banco.web.servicios;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -20,6 +21,7 @@ import co.edu.eam.ingesoft.pa.negocio.beans.CustomerEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.SavingAccountEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.SegundaClaveEJB;
 import co.edu.eam.ingesoft.pa.negocio.dto.CuentaAsociadaDTO;
+import co.edu.eam.ingesoft.pa.negocio.dto.VerificarDTO;
 
 //para invocar un servicio se necesita:
 /*
@@ -78,9 +80,25 @@ public class CuentaAsociadaRest {
 		List<CuentaAsociada> lista = cuentaAsociadaEJB.listarCuentas(c);
 
 		if (lista.isEmpty()) {
+
 			return new RespuestaDTO("No hay registros", 1, null);
 		} else {
-			return new RespuestaDTO("Se encontraron registros", 0, lista);
+			List<CuentaAsociadaDTO> listaDto = new ArrayList<>();
+			for (CuentaAsociada cuentas : lista) {
+				CuentaAsociadaDTO dto = new CuentaAsociadaDTO();
+
+				dto.setOwnerName(cuentas.getOwnerName());
+				dto.setOwnerTypeId(cuentas.getOwnerTypeId());
+				dto.setOwnerNumId(cuentas.getOwnerNumId());
+				dto.setBank(cuentas.getBank().getId());
+				dto.setIdType(cuentas.getCustomer().getIdType());
+				dto.setIdNum(cuentas.getCustomer().getIdNum());
+				dto.setNumber(cuentas.getNumber());
+				dto.setName(cuentas.getName());
+				dto.setEstado(cuentas.getEstado());
+				listaDto.add(dto);
+			}
+			return new RespuestaDTO("Se encontraron registros", 0, listaDto);
 		}
 	}
 
@@ -109,5 +127,27 @@ public class CuentaAsociadaRest {
 
 		return new RespuestaDTO("Hubo un error al hacer la peticion de asociacion", 1, null);
 	}
+	
+	
+	@POST
+	@Path("/verificarAsociada")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public RespuestaDTO verificarAsociada(VerificarDTO dto) {
+
+		CuentaAsociada cuentaAsociada = cuentaAsociadaEJB.buscar(dto.getCuenta());
+		
+		if (cuentaAsociada != null) {
+
+			if(cuentaAsociadaEJB.verificarCuenta(cuentaAsociada)){
+				return new RespuestaDTO("Verificada", 0, null);
+			}
+			return new RespuestaDTO("ERROR", 0, null);
+			
+		}
+
+		return new RespuestaDTO("Hubo un error al intentar verificar la cuenta", 1, null);
+	}
+	
 
 }

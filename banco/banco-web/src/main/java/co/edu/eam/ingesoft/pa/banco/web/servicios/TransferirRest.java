@@ -26,6 +26,7 @@ import co.edu.eam.ingesoft.pa.negocio.beans.SegundaClaveEJB;
 import co.edu.eam.ingesoft.pa.negocio.dto.CuentaAsociadaDTO;
 import co.edu.eam.ingesoft.pa.negocio.dto.SavingAccountDTO;
 import co.edu.eam.ingesoft.pa.negocio.dto.TransferirDTO;
+import co.edu.eam.ingesoft.pa.negocio.dto.VerificarDTO;
 
 //para invocar un servicio se necesita:
 /*

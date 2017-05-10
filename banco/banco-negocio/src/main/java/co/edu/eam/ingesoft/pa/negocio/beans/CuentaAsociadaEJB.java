@@ -119,11 +119,11 @@ public class CuentaAsociadaEJB {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void verificarCuenta(CuentaAsociada cuenta) {
+	public boolean verificarCuenta(CuentaAsociada cuenta) {
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
-		String endpointURL = "http://104.155.128.249:8080/interbancario/InterbancarioWS/InterbancarioWS";
+		String endpointURL = "http://104.198.67.149:8080/interbancario/InterbancarioWS/InterbancarioWS";
 		BindingProvider bp = (BindingProvider) servicio;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 
@@ -150,9 +150,11 @@ public class CuentaAsociadaEJB {
 			editar(cuenta);
 			System.out.println(cuenta.getNumber());
 			eliminar(cuenta.getNumber());
+			return false;
 		} else {
 			cuenta.setEstado(resp.getMensaje());
 			editar(cuenta);
+			return true;
 		}
 	}
 
@@ -177,7 +179,7 @@ public class CuentaAsociadaEJB {
 		InterbancarioWS_Service cliente = new InterbancarioWS_Service();
 		InterbancarioWS servicio = cliente.getInterbancarioWSPort();
 
-		String endpointURL = "http://104.155.128.249:8080/interbancario/InterbancarioWS/InterbancarioWS";
+		String endpointURL = "http://104.198.67.149:8080/interbancario/InterbancarioWS/InterbancarioWS";
 		BindingProvider bp = (BindingProvider) servicio;
 		bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointURL);
 		System.out.println("ANTES DEL SOAP");
