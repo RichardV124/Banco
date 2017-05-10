@@ -114,6 +114,7 @@ public class TransferirCuentaAsociada implements Serializable {
 		claveGenerada = segundaClaveEJB.generarClave();
 		SegundaClave sc = new SegundaClave();
 		sc.setClave(claveGenerada);
+
 		segundaClaveEJB.crear(sc, usuario.getCustomer());
 		String msj = "Su codigo de verificacion es: " + claveGenerada + "\n \nSu codigo expirara en 90 minutos";
 		segundaClaveEJB.enviarEmail( usuario.getCustomer().getEmail(),msj);
