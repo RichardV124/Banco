@@ -1,5 +1,6 @@
 package co.edu.eam.ingesoft.pa.banco.web.servicios;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -12,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Bank;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.CuentaAsociada;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.Customer;
 import co.edu.eam.ingesoft.avanzada.persistencia.entidades.SavingAccount;
@@ -21,6 +23,8 @@ import co.edu.eam.ingesoft.pa.negocio.beans.CuentaAsociadaEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.CustomerEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.SavingAccountEJB;
 import co.edu.eam.ingesoft.pa.negocio.beans.SegundaClaveEJB;
+import co.edu.eam.ingesoft.pa.negocio.dto.CuentaAsociadaDTO;
+import co.edu.eam.ingesoft.pa.negocio.dto.SavingAccountDTO;
 import co.edu.eam.ingesoft.pa.negocio.dto.TransferirDTO;
 
 //para invocar un servicio se necesita:
@@ -121,24 +125,43 @@ public class TransferirRest {
 		List<CuentaAsociada> lista = cuentaAsociadaEJB.listarCuentasAsociadasValidadas(c);
 
 		if (lista.isEmpty()) {
+
 			return new RespuestaDTO("No hay registros", 1, null);
 		} else {
-			return new RespuestaDTO("Se encontraron registros", 0, lista);
+			List<CuentaAsociadaDTO> listaDto = new ArrayList<>();
+			for (CuentaAsociada cuentas : lista) {
+				CuentaAsociadaDTO dto = new CuentaAsociadaDTO();
+
+				dto.setOwnerName(cuentas.getOwnerName());
+				dto.setOwnerTypeId(cuentas.getOwnerTypeId());
+				dto.setOwnerNumId(cuentas.getOwnerNumId());
+				dto.setBank(cuentas.getBank().getId());
+				dto.setIdType(cuentas.getCustomer().getIdType());
+				dto.setIdNum(cuentas.getCustomer().getIdNum());
+				dto.setNumber(cuentas.getNumber());
+				dto.setName(cuentas.getName());
+				dto.setEstado(cuentas.getEstado());
+				listaDto.add(dto);
+			}
+			return new RespuestaDTO("Se encontraron registros", 0, listaDto);
 		}
 	}
 
 	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/generarEnviarCodigo")
 	@GET
-	public String generarEnviarCodigo(@QueryParam("id") String cedula, @QueryParam("tipoId") String tipoId) {
+	public RespuestaDTO generarEnviarCodigo(@QueryParam("id") String cedula, @QueryParam("tipoId") String tipoId) {
 
 		Customer cus = customerEJB.buscarCustomer(tipoId, cedula);
 		String claveGenerada = segundaClaveEJB.generarClave();
 		SegundaClave sc = new SegundaClave();
 		sc.setClave(claveGenerada);
 		segundaClaveEJB.crear(sc, cus);
-		// segundaClaveEJB.enviarEmail(claveGenerada, "");
+		String msj = "Su codigo de verificacion es: " + claveGenerada + "\n \nSu codigo expirara en 90 minutos";
+		segundaClaveEJB.enviarEmail(claveGenerada, msj);
+		segundaClaveEJB.enviarSms(claveGenerada, msj);
 
-		return claveGenerada;
+		return new RespuestaDTO("Se encontraron registros", 0, claveGenerada);
 	}
 
 	@GET
@@ -153,7 +176,17 @@ public class TransferirRest {
 		if (lista.isEmpty()) {
 			return new RespuestaDTO("No hay registros", 1, null);
 		} else {
-			return new RespuestaDTO("Se encontraron registros", 0, lista);
+			List<SavingAccountDTO> listaDto = new ArrayList<>();
+			for (SavingAccount cuentas : lista) {
+				SavingAccountDTO dto = new SavingAccountDTO();
+
+				dto.setNumber(cuentas.getNumber());
+				dto.setAmmount(cuentas.getAmmount());
+				dto.setSavingInterest(cuentas.getSavingInterest());
+				listaDto.add(dto);
+			}
+
+			return new RespuestaDTO("Se encontraron registros", 0, listaDto);
 		}
 	}
 
@@ -168,14 +201,13 @@ public class TransferirRest {
 
 		if (asociada != null) {
 
-			String msj = cuentaAsociadaEJB.transferenciaInterbancariaWS(asociada.getBank().getId(), dto.getCuentaAsociada(),
-					dto.getCantidad(), dto.getCuentaAhorros());
-			System.out.println(msj+"ASJDKASDJ");
+			String msj = cuentaAsociadaEJB.transferenciaInterbancariaWS(asociada.getBank().getId(),
+					dto.getCuentaAsociada(), dto.getCantidad(), dto.getCuentaAhorros());
+			System.out.println(msj + "ASJDKASDJ");
 			return new RespuestaDTO("Se completo la transferencia exitosamente!", 0, true);
 		}
 
-			return new RespuestaDTO("Ocurrio un error al completar la transferencia", 1, false);
-		
+		return new RespuestaDTO("Ocurrio un error al completar la transferencia", 1, false);
 
 	}
 
