@@ -114,19 +114,19 @@ public class TransferirCuentaAsociada implements Serializable {
 		claveGenerada = segundaClaveEJB.generarClave();
 		SegundaClave sc = new SegundaClave();
 		sc.setClave(claveGenerada);
-<<<<<<< HEAD
+
 		segundaClaveEJB.crear(sc, usuario.getCustomer());
 		String msj = "Su codigo de verificacion es: " + claveGenerada + "\n \nSu codigo expirara en 90 minutos";
 		segundaClaveEJB.enviarEmail( usuario.getCustomer().getEmail(),msj);
 		System.out.println("Se ha enviado al correo: " + usuario.getCustomer().getEmail() + "CODIGO:" +claveGenerada);
 		segundaClaveEJB.enviarSms(usuario.getCustomer().getNumberPhone(),msj);
 		System.out.println("Se ha enviado al correo: " + usuario.getCustomer().getNumberPhone() + "CODIGO:" +claveGenerada);
-=======
+
 		segundaClaveEJB.crear(sc,usuario.getCustomer());
 		segundaClaveEJB.enviarEmail(claveGenerada, usuario.getCustomer().getEmail());
 		System.out.println("Se ha enviado al correo: "+usuario.getCustomer().getEmail()+" clave "+claveGenerada);
 		//segundaClaveEJB.enviarSms(claveGenerada, usuario.getCustomer().getNumberPhone());
->>>>>>> branch 'master' of https://github.com/RichardV124/Banco.git
+
 	}
 
 	public void transferir() {
